@@ -1,0 +1,1135 @@
+[
+  {
+    "name": "The Sunday Linen Shirt",
+    "category": "Shirts",
+    "price": 2490,
+    "detail": "Relaxed fit in breathable European flax linen. Made for slow mornings and warm days.",
+    "aliases": [
+      "linen shirt",
+      "shirt",
+      "sattai",
+      "linen sattai",
+      "சட்டை",
+      "லினன் சட்டை"
+    ],
+    "image": "https://images.unsplash.com/photo-1617266226833-00ce9f9fe0fc?auto=format&fit=crop&w=900&q=85",
+    "color": "Oat milk",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": "BESTSELLER",
+    "id": "sunday-linen-shirt",
+    "audience": "Women",
+    "collection": "Womenswear"
+  },
+  {
+    "name": "Everyday Straight-Leg Jean",
+    "category": "Denim",
+    "price": 3190,
+    "detail": "A high-rise, soft-structure denim with a little room to move.",
+    "aliases": [
+      "jeans",
+      "jean",
+      "denim",
+      "jeans pant",
+      "ஜீன்ஸ்"
+    ],
+    "image": "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=900&q=85",
+    "color": "Vintage indigo",
+    "sizes": [
+      "26",
+      "28",
+      "30",
+      "32",
+      "34"
+    ],
+    "badge": "JUST IN",
+    "id": "straight-leg-jean",
+    "audience": "Women",
+    "collection": "Womenswear"
+  },
+  {
+    "name": "Soft Form Knit Top",
+    "category": "Knitwear",
+    "price": 1790,
+    "detail": "A soft cotton-modal knit with a clean neckline and easy drape.",
+    "aliases": [
+      "knit top",
+      "top",
+      "மேல்சட்டை"
+    ],
+    "image": "https://images.unsplash.com/photo-1618614917105-a544c944ffd7?auto=format&fit=crop&w=900&q=85",
+    "color": "Warm ivory",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": "",
+    "id": "soft-form-knit-top",
+    "audience": "Women",
+    "collection": "Womenswear"
+  },
+  {
+    "name": "The Weekender Jacket",
+    "category": "Outerwear",
+    "price": 5490,
+    "detail": "A lightweight utility layer in washed cotton twill, finished with thoughtful pockets.",
+    "aliases": [
+      "jacket",
+      "outerwear",
+      "ஜாக்கெட்"
+    ],
+    "image": "https://images.unsplash.com/photo-1770649264116-7b1e778433ee?auto=format&fit=crop&w=900&q=85",
+    "color": "Moss",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": "LOW STOCK",
+    "id": "weekender-jacket",
+    "audience": "Men",
+    "collection": "Menswear"
+  },
+  {
+    "name": "Everyday Tote",
+    "category": "Accessories",
+    "price": 1290,
+    "detail": "Room for the little things and the in-between plans. Recycled cotton canvas.",
+    "aliases": [
+      "tote",
+      "bag",
+      "பை"
+    ],
+    "image": "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=900&q=85",
+    "color": "Espresso",
+    "sizes": [
+      "ONE SIZE"
+    ],
+    "badge": "",
+    "id": "everyday-tote",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories"
+  },
+  {
+    "name": "The Weekend Trouser",
+    "category": "Trousers",
+    "price": 2890,
+    "detail": "Easy wide-leg tailoring with a pull-on waist and a beautifully fluid feel.",
+    "aliases": [
+      "trouser",
+      "pants",
+      "pant",
+      "கால்சட்டை"
+    ],
+    "image": "https://images.unsplash.com/photo-1506629905607-d9c297d8d1d3?auto=format&fit=crop&w=900&q=85",
+    "color": "Soft black",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": "",
+    "id": "weekend-trouser",
+    "audience": "Women",
+    "collection": "Womenswear"
+  },
+  {
+    "id": "oxford-everyday-shirt",
+    "name": "The Everyday Oxford",
+    "category": "Shirts",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 2790,
+    "detail": "A crisp cotton Oxford with a relaxed shoulder and an easy, lived-in finish.",
+    "aliases": [
+      "mens shirt",
+      "men's shirt",
+      "oxford shirt",
+      "gents shirt"
+    ],
+    "image": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=85",
+    "color": "Sky stripe",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "badge": "JUST IN"
+  },
+  {
+    "id": "daily-cotton-tee",
+    "name": "Daily Cotton Tee",
+    "category": "T-shirts",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 1290,
+    "detail": "Heavyweight organic cotton, a clean crew neck, and a shape that holds up.",
+    "aliases": [
+      "mens t shirt",
+      "men's tee",
+      "gents tshirt",
+      "cotton t shirt"
+    ],
+    "image": "https://images.unsplash.com/photo-1500757810556-5d600d9b737d?auto=format&fit=crop&w=900&q=85",
+    "color": "Chalk",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "relaxed-chino",
+    "name": "Relaxed Taper Chino",
+    "category": "Trousers",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 2890,
+    "detail": "Soft stretch cotton with a relaxed top block and a neat tapered leg.",
+    "aliases": [
+      "mens pants",
+      "men's trousers",
+      "chinos",
+      "men's chinos"
+    ],
+    "image": "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=900&q=85",
+    "color": "Stone",
+    "sizes": [
+      "30",
+      "32",
+      "34",
+      "36",
+      "38"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "weekend-overshirt",
+    "name": "The Weekend Overshirt",
+    "category": "Outerwear",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 3890,
+    "detail": "A brushed cotton layer for cool evenings, easy over a tee or knit.",
+    "aliases": [
+      "mens jacket",
+      "men's overshirt",
+      "shacket"
+    ],
+    "image": "https://images.unsplash.com/photo-1772521234184-3730c30c4cb5?auto=format&fit=crop&w=900&q=85",
+    "color": "Deep olive",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "linen-camp-collar-shirt",
+    "name": "Linen Camp Collar Shirt",
+    "category": "Shirts",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 2690,
+    "detail": "An easy-wearing shirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "linen camp collar shirt",
+      "shirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1763069228076-c7e3995e1769?auto=format&fit=crop&w=900&q=85",
+    "color": "Natural flax",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "harbor-stripe-shirt",
+    "name": "Harbor Stripe Shirt",
+    "category": "Shirts",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 2590,
+    "detail": "An easy-wearing shirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "harbor stripe shirt",
+      "shirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1519744434498-a0de604df9db?auto=format&fit=crop&w=900&q=85",
+    "color": "Blue stripe",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "soft-poplin-blouse",
+    "name": "Soft Poplin Blouse",
+    "category": "Shirts",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 2290,
+    "detail": "An easy-wearing shirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "soft poplin blouse",
+      "shirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1500336624523-d727130c3328?auto=format&fit=crop&w=900&q=85",
+    "color": "Cloud white",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "sunday-boxy-tee",
+    "name": "Sunday Boxy Tee",
+    "category": "T-shirts",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 1190,
+    "detail": "An easy-wearing t-shirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "sunday boxy tee",
+      "t-shirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1606430679554-ab04fb3a26db?auto=format&fit=crop&w=900&q=85",
+    "color": "Parchment",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "ribbed-square-neck-tee",
+    "name": "Ribbed Square-Neck Tee",
+    "category": "T-shirts",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 1390,
+    "detail": "An easy-wearing t-shirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "ribbed square-neck tee",
+      "t-shirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1543698523-d56bf53e0ffe?auto=format&fit=crop&w=900&q=85",
+    "color": "Warm ivory",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "the-easy-tank",
+    "name": "The Easy Tank",
+    "category": "T-shirts",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 990,
+    "detail": "An easy-wearing t-shirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "the easy tank",
+      "t-shirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1673924303249-437e2ac8e8f0?auto=format&fit=crop&w=900&q=85",
+    "color": "Terracotta",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "coastal-wide-leg-jean",
+    "name": "Coastal Wide-Leg Jean",
+    "category": "Denim",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 3290,
+    "detail": "An easy-wearing denim piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "coastal wide-leg jean",
+      "denim"
+    ],
+    "image": "https://images.unsplash.com/photo-1560570214-1f40fd2525e2?auto=format&fit=crop&w=900&q=85",
+    "color": "Washed blue",
+    "sizes": [
+      "26",
+      "28",
+      "30",
+      "32",
+      "34"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "everyday-straight-jean",
+    "name": "Everyday Straight Jean",
+    "category": "Denim",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 3390,
+    "detail": "An easy-wearing denim piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "everyday straight jean",
+      "denim"
+    ],
+    "image": "https://images.unsplash.com/photo-1662578354822-f8b43ecaeaaa?auto=format&fit=crop&w=900&q=85",
+    "color": "Mid blue",
+    "sizes": [
+      "26",
+      "28",
+      "30",
+      "32",
+      "34"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "relaxed-carpenter-jean",
+    "name": "Relaxed Carpenter Jean",
+    "category": "Denim",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 3590,
+    "detail": "An easy-wearing denim piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "relaxed carpenter jean",
+      "denim"
+    ],
+    "image": "https://images.unsplash.com/photo-1774413768880-ab6ac8eb5d43?auto=format&fit=crop&w=900&q=85",
+    "color": "Workwear blue",
+    "sizes": [
+      "26",
+      "28",
+      "30",
+      "32",
+      "34"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "soft-rib-cardigan",
+    "name": "Soft Rib Cardigan",
+    "category": "Knitwear",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 2990,
+    "detail": "An easy-wearing knitwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "soft rib cardigan",
+      "knitwear"
+    ],
+    "image": "https://images.unsplash.com/photo-1544727008-34c8e64b4fb0?auto=format&fit=crop&w=900&q=85",
+    "color": "Oatmeal",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "cloud-crew-knit",
+    "name": "Cloud Crew Knit",
+    "category": "Knitwear",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 3190,
+    "detail": "An easy-wearing knitwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "cloud crew knit",
+      "knitwear"
+    ],
+    "image": "https://images.unsplash.com/flagged/photo-1573807195705-614cefe9ba9c?auto=format&fit=crop&w=900&q=85",
+    "color": "Misty grey",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "the-merino-polo",
+    "name": "The Merino Polo",
+    "category": "Knitwear",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 3990,
+    "detail": "An easy-wearing knitwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "the merino polo",
+      "knitwear"
+    ],
+    "image": "https://images.unsplash.com/photo-1576110598658-096ae24cdb97?auto=format&fit=crop&w=900&q=85",
+    "color": "Forest",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "weekend-crew-sweater",
+    "name": "Weekend Crew Sweater",
+    "category": "Knitwear",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 3690,
+    "detail": "An easy-wearing knitwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "weekend crew sweater",
+      "knitwear"
+    ],
+    "image": "https://images.unsplash.com/photo-1601920918529-cbaa66726c32?auto=format&fit=crop&w=900&q=85",
+    "color": "Charcoal",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "soft-form-hoodie",
+    "name": "Soft Form Hoodie",
+    "category": "Knitwear",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 3290,
+    "detail": "An easy-wearing knitwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "soft form hoodie",
+      "knitwear"
+    ],
+    "image": "https://images.unsplash.com/photo-1767968037382-8eb9c564339f?auto=format&fit=crop&w=900&q=85",
+    "color": "Moss grey",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "the-city-trench",
+    "name": "The City Trench",
+    "category": "Outerwear",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 6990,
+    "detail": "An easy-wearing outerwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "the city trench",
+      "outerwear"
+    ],
+    "image": "https://images.unsplash.com/photo-1579171931975-97962e46be2d?auto=format&fit=crop&w=900&q=85",
+    "color": "Sand",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "the-field-coat",
+    "name": "The Field Coat",
+    "category": "Outerwear",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 7490,
+    "detail": "An easy-wearing outerwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "the field coat",
+      "outerwear"
+    ],
+    "image": "https://images.unsplash.com/photo-1525360945394-7bccf2809123?auto=format&fit=crop&w=900&q=85",
+    "color": "Olive",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "lightweight-rain-shell",
+    "name": "Lightweight Rain Shell",
+    "category": "Outerwear",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 4990,
+    "detail": "An easy-wearing outerwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "lightweight rain shell",
+      "outerwear"
+    ],
+    "image": "https://images.unsplash.com/photo-1764179690168-2fdaf3076ee0?auto=format&fit=crop&w=900&q=85",
+    "color": "Slate",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "everyday-blazer",
+    "name": "Everyday Blazer",
+    "category": "Outerwear",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 5990,
+    "detail": "An easy-wearing outerwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "everyday blazer",
+      "outerwear"
+    ],
+    "image": "https://images.unsplash.com/photo-1559475492-145fc3848552?auto=format&fit=crop&w=900&q=85",
+    "color": "Espresso",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "studio-blazer",
+    "name": "Studio Blazer",
+    "category": "Outerwear",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 6290,
+    "detail": "An easy-wearing outerwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "studio blazer",
+      "outerwear"
+    ],
+    "image": "https://images.unsplash.com/photo-1544774210-075d2f16e35d?auto=format&fit=crop&w=900&q=85",
+    "color": "Midnight",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "easy-pleat-trouser",
+    "name": "Easy Pleat Trouser",
+    "category": "Trousers",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 2990,
+    "detail": "An easy-wearing trousers piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "easy pleat trouser",
+      "trousers"
+    ],
+    "image": "https://images.unsplash.com/photo-1650092034396-d12b29642cf5?auto=format&fit=crop&w=900&q=85",
+    "color": "Cocoa",
+    "sizes": [
+      "26",
+      "28",
+      "30",
+      "32",
+      "34"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "drawstring-linen-pant",
+    "name": "Drawstring Linen Pant",
+    "category": "Trousers",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 2590,
+    "detail": "An easy-wearing trousers piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "drawstring linen pant",
+      "trousers"
+    ],
+    "image": "https://images.unsplash.com/photo-1769063382663-ec2414702d3a?auto=format&fit=crop&w=900&q=85",
+    "color": "Natural flax",
+    "sizes": [
+      "26",
+      "28",
+      "30",
+      "32",
+      "34"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "everyday-chino",
+    "name": "Everyday Chino",
+    "category": "Trousers",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 2790,
+    "detail": "An easy-wearing trousers piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "everyday chino",
+      "trousers"
+    ],
+    "image": "https://images.unsplash.com/photo-1527813972756-2890936000e9?auto=format&fit=crop&w=900&q=85",
+    "color": "Khaki",
+    "sizes": [
+      "26",
+      "28",
+      "30",
+      "32",
+      "34"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "relaxed-linen-trouser",
+    "name": "Relaxed Linen Trouser",
+    "category": "Trousers",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 2990,
+    "detail": "An easy-wearing trousers piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "relaxed linen trouser",
+      "trousers"
+    ],
+    "image": "https://images.unsplash.com/photo-1573838886553-a0c72a34b5b0?auto=format&fit=crop&w=900&q=85",
+    "color": "Pebble",
+    "sizes": [
+      "26",
+      "28",
+      "30",
+      "32",
+      "34"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "everyday-midi-dress",
+    "name": "Everyday Midi Dress",
+    "category": "Dresses",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 3890,
+    "detail": "An easy-wearing dresses piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "everyday midi dress",
+      "dresses"
+    ],
+    "image": "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&w=900&q=85",
+    "color": "Ink floral",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "sunday-shirt-dress",
+    "name": "Sunday Shirt Dress",
+    "category": "Dresses",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 4290,
+    "detail": "An easy-wearing dresses piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "sunday shirt dress",
+      "dresses"
+    ],
+    "image": "https://images.unsplash.com/photo-1664894626606-283ad185a726?auto=format&fit=crop&w=900&q=85",
+    "color": "Pale blue",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "linen-slip-dress",
+    "name": "Linen Slip Dress",
+    "category": "Dresses",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 3990,
+    "detail": "An easy-wearing dresses piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "linen slip dress",
+      "dresses"
+    ],
+    "image": "https://images.unsplash.com/photo-1642596666088-7246cf1f8af5?auto=format&fit=crop&w=900&q=85",
+    "color": "Warm sand",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "weekend-skirt",
+    "name": "Weekend Skirt",
+    "category": "Skirts",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 2490,
+    "detail": "An easy-wearing skirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "weekend skirt",
+      "skirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1664076458686-3449062080ac?auto=format&fit=crop&w=900&q=85",
+    "color": "Olive",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "everyday-denim-skirt",
+    "name": "Everyday Denim Skirt",
+    "category": "Skirts",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 2390,
+    "detail": "An easy-wearing skirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "everyday denim skirt",
+      "skirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1649172850684-4ccdd44127e6?auto=format&fit=crop&w=900&q=85",
+    "color": "Vintage blue",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "canvas-shopper",
+    "name": "Canvas Shopper",
+    "category": "Accessories",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 1490,
+    "detail": "An easy-wearing accessories piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "canvas shopper",
+      "accessories"
+    ],
+    "image": "https://images.unsplash.com/photo-1713425887901-513ba88d79bb?auto=format&fit=crop&w=900&q=85",
+    "color": "Natural",
+    "sizes": "ONE SIZE",
+    "badge": ""
+  },
+  {
+    "id": "mini-crossbody",
+    "name": "Mini Crossbody",
+    "category": "Accessories",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 2490,
+    "detail": "An easy-wearing accessories piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "mini crossbody",
+      "accessories"
+    ],
+    "image": "https://images.unsplash.com/photo-1681747685985-a401c271156c?auto=format&fit=crop&w=900&q=85",
+    "color": "Cognac",
+    "sizes": "ONE SIZE",
+    "badge": ""
+  },
+  {
+    "id": "soft-leather-belt",
+    "name": "Soft Leather Belt",
+    "category": "Accessories",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 1690,
+    "detail": "An easy-wearing accessories piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "soft leather belt",
+      "accessories"
+    ],
+    "image": "https://images.unsplash.com/photo-1624222247344-550fb8e92f06?auto=format&fit=crop&w=900&q=85",
+    "color": "Dark brown",
+    "sizes": "ONE SIZE",
+    "badge": ""
+  },
+  {
+    "id": "everyday-cotton-cap",
+    "name": "Everyday Cotton Cap",
+    "category": "Accessories",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 990,
+    "detail": "An easy-wearing accessories piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "everyday cotton cap",
+      "accessories"
+    ],
+    "image": "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=900&q=85",
+    "color": "Deep green",
+    "sizes": "ONE SIZE",
+    "badge": ""
+  },
+  {
+    "id": "ribbed-everyday-socks",
+    "name": "Ribbed Everyday Socks",
+    "category": "Accessories",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 490,
+    "detail": "An easy-wearing accessories piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "ribbed everyday socks",
+      "accessories"
+    ],
+    "image": "https://images.unsplash.com/photo-1586350977771-b3b0abc6accb?auto=format&fit=crop&w=900&q=85",
+    "color": "Cream",
+    "sizes": "ONE SIZE",
+    "badge": ""
+  },
+  {
+    "id": "weekender-scarf",
+    "name": "Weekender Scarf",
+    "category": "Accessories",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 1790,
+    "detail": "An easy-wearing accessories piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "weekender scarf",
+      "accessories"
+    ],
+    "image": "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=900&q=85",
+    "color": "Rust check",
+    "sizes": "ONE SIZE",
+    "badge": ""
+  },
+  {
+    "id": "clean-court-sneaker",
+    "name": "Clean Court Sneaker",
+    "category": "Accessories",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 3990,
+    "detail": "An easy-wearing accessories piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "clean court sneaker",
+      "accessories"
+    ],
+    "image": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85",
+    "color": "Chalk",
+    "sizes": "ONE SIZE",
+    "badge": ""
+  },
+  {
+    "id": "weekend-sandal",
+    "name": "Weekend Sandal",
+    "category": "Accessories",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 2790,
+    "detail": "An easy-wearing accessories piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "weekend sandal",
+      "accessories"
+    ],
+    "image": "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=900&q=85",
+    "color": "Tan",
+    "sizes": "ONE SIZE",
+    "badge": ""
+  },
+  {
+    "id": "minimal-tote",
+    "name": "Minimal Tote",
+    "category": "Accessories",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 1890,
+    "detail": "An easy-wearing accessories piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "minimal tote",
+      "accessories"
+    ],
+    "image": "https://images.unsplash.com/photo-1758542988969-39a10168b2ce?auto=format&fit=crop&w=900&q=85",
+    "color": "Black",
+    "sizes": "ONE SIZE",
+    "badge": ""
+  },
+  {
+    "id": "everyday-polo",
+    "name": "Everyday Polo",
+    "category": "T-shirts",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 1690,
+    "detail": "An easy-wearing t-shirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "everyday polo",
+      "t-shirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1764593008673-af6056758b4a?auto=format&fit=crop&w=900&q=85",
+    "color": "Sage",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "long-sleeve-base-tee",
+    "name": "Long-Sleeve Base Tee",
+    "category": "T-shirts",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 1490,
+    "detail": "An easy-wearing t-shirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "long-sleeve base tee",
+      "t-shirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1524660988542-c440de9c0fde?auto=format&fit=crop&w=900&q=85",
+    "color": "Ink",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "relaxed-cotton-shirt",
+    "name": "Relaxed Cotton Shirt",
+    "category": "Shirts",
+    "audience": "Men",
+    "collection": "Menswear",
+    "price": 2890,
+    "detail": "An easy-wearing shirts piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "relaxed cotton shirt",
+      "shirts"
+    ],
+    "image": "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=900&q=85",
+    "color": "Soft white",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  },
+  {
+    "id": "the-sunday-cardigan",
+    "name": "The Sunday Cardigan",
+    "category": "Knitwear",
+    "audience": "Women",
+    "collection": "Womenswear",
+    "price": 3290,
+    "detail": "An easy-wearing knitwear piece in considered fabrics, made for comfort and repeat wear.",
+    "aliases": [
+      "the sunday cardigan",
+      "knitwear"
+    ],
+    "image": "https://images.unsplash.com/photo-1511812056919-b670bdcc8cea?auto=format&fit=crop&w=900&q=85",
+    "color": "Rosewood",
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "badge": ""
+  }
+]
