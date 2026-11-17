@@ -133,6 +133,12 @@ class NeonPool:
         self.connections: list[Any] = []
 
     async def open(self) -> None:
+        for _ in range(self.size):
+            conn = await self._connect()
+            self.connections.append(conn)
+            await self.available.put(conn)
+
+    async def _connect(self) -> Any:
         import pg8000.dbapi
         parsed = urlparse(self.dsn)
         options = {
@@ -141,18 +147,67 @@ class NeonPool:
             "database": unquote(parsed.path.lstrip("/")), "ssl_context": True,
             "timeout": 8,
         }
-        for _ in range(self.size):
-            conn = await asyncio.to_thread(pg8000.dbapi.connect, **options)
-            conn.autocommit = True
-            self.connections.append(conn)
-            await self.available.put(conn)
+        conn = await asyncio.to_thread(pg8000.dbapi.connect, **options)
+        conn.autocommit = True
+        return conn
+
+    async def _replace(self, old: Any) -> Any | None:
+        try:
+            await asyncio.to_thread(old.close)
+        except Exception:
+            pass
+        try:
+            self.connections.remove(old)
+        except ValueError:
+            pass
+        try:
+            conn = await self._connect()
+        except Exception as exc:
+            print(f"Neon connection reconnect failed: {type(exc).__name__}: {exc}")
+            return None
+        self.connections.append(conn)
+        return conn
+
+    async def _probe(self, raw: Any) -> None:
+        def run() -> None:
+            cursor = raw.cursor()
+            try:
+                cursor.execute("SELECT 1")
+                cursor.fetchone()
+            finally:
+                cursor.close()
+        await asyncio.to_thread(run)
 
     @asynccontextmanager
     async def connection(self):
         raw = await self.available.get()
+        if raw is None:
+            try:
+                raw = await self._connect()
+                self.connections.append(raw)
+            except Exception:
+                await self.available.put(None)
+                raise
         try:
+            # Neon may suspend an idle compute and close its sockets. Check a
+            # pooled connection before giving it to an API handler.
+            try:
+                await self._probe(raw)
+            except Exception:
+                raw = await self._replace(raw)
+                if raw is None:
+                    raise RuntimeError("Neon database connection is unavailable")
             yield NeonConnection(raw)
-        finally:
+        except Exception:
+            # Discard a socket after query/transaction errors so the next
+            # request doesn't repeatedly receive the same broken connection.
+            if raw is None:
+                await self.available.put(None)
+            else:
+                replacement = await self._replace(raw)
+                await self.available.put(replacement)
+            raise
+        else:
             await self.available.put(raw)
 
     async def close(self) -> None:
@@ -748,7 +803,15 @@ async def process_openwa_event(payload: dict[str, Any], idempotency_key: str) ->
 
 @app.get("/api/health")
 async def health() -> dict[str, Any]:
-    return {"ok":True,"providers":provider_status(),"database":{"configured":bool(DATABASE_URL),"connected":db_pool is not None}}
+    connected = False
+    if db_pool is not None:
+        try:
+            async with db_pool.connection() as conn:
+                await conn.execute("SELECT 1")
+            connected = True
+        except Exception as exc:
+            print(f"Neon health probe failed: {type(exc).__name__}: {exc}")
+    return {"ok":True,"providers":provider_status(),"database":{"configured":bool(DATABASE_URL),"connected":connected}}
 
 
 def require_neon() -> None:
@@ -825,12 +888,39 @@ async def register_account(body: RegisterInput, response: Response) -> dict[str,
     phone = normalize_order_phone(body.phone)
     if not 11 <= len(phone) <= 15:
         raise HTTPException(422, "Enter a valid phone number including its country code if needed.")
-    async with db_pool.connection() as conn:
+    password_hash = hash_password(body.password)
+    row = None
+    for attempt in range(2):
         try:
-            row = await (await conn.execute("INSERT INTO user_accounts(full_name,email,phone_e164,password_hash) VALUES (%s,%s,%s,%s) RETURNING id", (body.name.strip(), email, phone, hash_password(body.password)))).fetchone()
-        except Exception as exc:
-            if "unique" in str(exc).lower(): raise HTTPException(409, "An account already exists for that email.") from exc
+            async with db_pool.connection() as conn:
+                row = await (await conn.execute(
+                    "INSERT INTO user_accounts(full_name,email,phone_e164,password_hash) "
+                    "VALUES (%s,%s,%s,%s) ON CONFLICT (email) DO NOTHING RETURNING id",
+                    (body.name.strip(), email, phone, password_hash),
+                )).fetchone()
+                if row is None:
+                    # A prior attempt may have committed just before its socket
+                    # dropped. Treat that retry as success only for the same password.
+                    existing = await (await conn.execute(
+                        "SELECT id,password_hash FROM user_accounts WHERE email=%s AND role='customer'",
+                        (email,),
+                    )).fetchone()
+                    if existing and verify_password(body.password, existing[1]):
+                        row = (existing[0],)
+                    else:
+                        raise HTTPException(409, "An account already exists for that email.")
+            break
+        except HTTPException:
             raise
+        except Exception as exc:
+            transient = type(exc).__name__ in {"InterfaceError", "OperationalError"} and any(
+                word in str(exc).lower() for word in ("network", "connection", "socket", "timeout", "closed")
+            )
+            if not transient:
+                raise
+            if attempt == 1:
+                print(f"Neon registration failed after reconnect: {type(exc).__name__}: {exc}")
+                raise HTTPException(503, "The account database connection was interrupted. Please retry in a moment.") from exc
     user = {"id":row[0],"email":email,"name":body.name.strip(),"phone":phone,"role":"customer"}
     set_session_cookie(response, user)
     return {"user":user}
