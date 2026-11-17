@@ -154,7 +154,6 @@ Follow `integrations/openwa/README.md` to start the OpenWA Docker gateway, link 
 - `POST /api/approvals/{approval_id}` — `{ "decision": "approve" | "decline", "reviewer": "..." }`.
 - `POST /api/policy/upload` — multipart PDF, TXT, or Markdown policy import.
 - `POST /webhooks/openwa` — signed OpenWA inbound message webhook.
-- `GET|POST /webhooks/whatsapp` — optional Meta Cloud API webhook.
 - `GET /docs` — FastAPI OpenAPI interface.
 
 ## Official API references

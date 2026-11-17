@@ -22,7 +22,7 @@ import pymupdf
 from dotenv import load_dotenv
 from fastapi import BackgroundTasks, FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, PlainTextResponse
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -717,28 +717,6 @@ async def whatsapp_send(phone: str, text: str) -> dict[str, Any]:
         return {"sent":True,"message_id":response.json().get("messages",[{}])[0].get("id")}
 
 
-async def process_whatsapp(payload: dict[str, Any]) -> None:
-    for entry in payload.get("entry",[]):
-        for change in entry.get("changes",[]):
-            value = change.get("value",{})
-            contacts = {c.get("wa_id"):c.get("profile",{}).get("name") for c in value.get("contacts",[])}
-            for message in value.get("messages",[]):
-                phone = message.get("from")
-                try:
-                    if message.get("type") == "text":
-                        question = message.get("text",{}).get("body","")
-                    elif message.get("type") == "audio":
-                        media_id = message.get("audio",{}).get("id")
-                        question = await fetch_whatsapp_audio(media_id) if media_id else ""
-                    else:
-                        question = ""
-                    if not question: question = "I received a message type that needs a human support agent. Please connect me to support."
-                    result = await respond(question,phone,"whatsapp","auto")
-                    await whatsapp_send(phone,result["answer"])
-                except Exception as exc:
-                    print(f"WhatsApp message processing error: {exc}")
-
-
 async def process_openwa_event(payload: dict[str, Any], idempotency_key: str) -> None:
     try:
         if payload.get("event") != "message.received":
@@ -766,18 +744,6 @@ async def process_openwa_event(payload: dict[str, Any], idempotency_key: str) ->
         print(f"OpenWA message processing error: {exc}")
     finally:
         openwa_inflight.discard(idempotency_key)
-
-
-async def fetch_whatsapp_audio(media_id: str) -> str:
-    token = os.getenv("WHATSAPP_ACCESS_TOKEN")
-    if not token or not os.getenv("GROQ_API_KEY"):
-        return "I received your voice note. Please type your question or try again later."
-    async with httpx.AsyncClient(timeout=35) as client:
-        meta = await client.get(f"https://graph.facebook.com/{os.getenv('WHATSAPP_API_VERSION','v23.0')}/{media_id}",headers={"Authorization":f"Bearer {token}"})
-        meta.raise_for_status()
-        media = await client.get(meta.json()["url"],headers={"Authorization":f"Bearer {token}"})
-        media.raise_for_status()
-        return await transcribe_audio(media.content,meta.json().get("mime_type","audio/ogg"))
 
 
 @app.get("/api/health")
@@ -1433,29 +1399,6 @@ async def openwa_webhook(request: Request, background_tasks: BackgroundTasks) ->
     openwa_inflight.add(idempotency_key)
     background_tasks.add_task(process_openwa_event, payload, idempotency_key)
     return {"received": True}
-
-
-@app.get("/webhooks/whatsapp")
-async def verify_whatsapp(request: Request) -> PlainTextResponse:
-    q=request.query_params
-    if q.get("hub.mode")=="subscribe" and hmac.compare_digest(q.get("hub.verify_token",""),os.getenv("WHATSAPP_VERIFY_TOKEN","")):
-        return PlainTextResponse(q.get("hub.challenge",""))
-    raise HTTPException(403,"WhatsApp webhook verification failed.")
-
-
-@app.post("/webhooks/whatsapp")
-async def whatsapp_webhook(request: Request, background_tasks: BackgroundTasks) -> dict[str,bool]:
-    raw=await request.body()
-    secret=os.getenv("WHATSAPP_APP_SECRET","")
-    signature=request.headers.get("x-hub-signature-256","")
-    if secret:
-        expected="sha256="+hmac.new(secret.encode(),raw,hashlib.sha256).hexdigest()
-        if not hmac.compare_digest(signature,expected): raise HTTPException(401,"Invalid webhook signature.")
-    elif os.getenv("APP_ENV","development")=="production":
-        raise HTTPException(503,"Configure WHATSAPP_APP_SECRET before production use.")
-    payload=await request.json()
-    background_tasks.add_task(process_whatsapp,payload)
-    return {"received":True}
 
 
 @app.get("/{asset_path:path}")
