@@ -662,3 +662,21 @@ body { background: linear-gradient(145deg,#f4b400 0%,#ffc20a 46%,#eda900 100%); 
 @media (prefers-reduced-motion: reduce) {
   .announcement svg, .hero-photo.hero-photo-active, .product-card, .support-fab { animation: none !important; }
 }
+
+/* A little more ecommerce energy: tactile add-to-bag feedback and product image shimmer. */
+.bag-trigger { isolation: isolate; }
+.bag-trigger i { position: relative; animation: bag-count-pop .32s cubic-bezier(.2,1.5,.5,1) both; }
+.bag-trigger:hover svg { animation: bag-jingle .45s ease-in-out; transform-origin: 50% 20%; }
+.product-image { position: relative; }
+.product-image:after { position: absolute; inset: 0; content: ''; pointer-events: none; background: linear-gradient(110deg,transparent 22%,#fff8 45%,transparent 66%); transform: translateX(-130%); transition: transform .75s ease; }
+.product-card:hover .product-image:after { transform: translateX(130%); }
+.quick-add:hover>span:first-child svg { animation: bag-drop .42s cubic-bezier(.2,1.4,.5,1); }
+.hero-control:active, .category-showcase-card:active, .quick-add:active, .dark-cta:active { transform: scale(.97); }
+.category-showcase-card>svg { transition: transform .25s cubic-bezier(.2,1.4,.5,1); }
+.category-showcase-card:hover>svg { transform: translate(4px,-4px) scale(1.12); }
+@keyframes bag-count-pop { 0% { transform: scale(.55); opacity: .3; } 70% { transform: scale(1.25); opacity: 1; } 100% { transform: scale(1); } }
+@keyframes bag-jingle { 0%,100% { rotate: 0deg; } 25% { rotate: -12deg; } 50% { rotate: 10deg; } 75% { rotate: -6deg; } }
+@keyframes bag-drop { 0%,100% { transform: translateY(0); } 45% { transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) {
+  .bag-trigger i, .bag-trigger:hover svg, .product-card:hover .product-image:after, .quick-add:hover>span:first-child svg { animation: none !important; transition: none !important; }
+}
