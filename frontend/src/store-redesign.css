@@ -313,7 +313,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .chat-bottom-note { padding-bottom: 13px; }
 .product-modal, .checkout-modal, .account-modal, .auth-modal, .cart-drawer { border-radius: 12px; box-shadow: 0 20px 65px #27070e2b; }
 .overlay { backdrop-filter: blur(5px); }
-@keyframes hero-copy-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+/* Animate opacity only so the base translateY(-50%) keeps the copy vertically centered. */
+@keyframes hero-copy-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes hero-progress { to { width: 100%; } }
 @media (max-width: 700px) {
   .hero { height: clamp(510px, 145vw, 650px); min-height: 510px; }
