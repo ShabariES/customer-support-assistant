@@ -33,11 +33,23 @@ STORE_PATH = DATA_DIR / "store.json"
 DATA_DIR.mkdir(exist_ok=True)
 
 PRODUCTS = json.loads((ROOT / 'frontend' / 'catalog.json').read_text(encoding='utf-8'))
+STORE_KNOWLEDGE = {
+    "brand": "Form & Field is an online clothing and accessories store for considered everyday pieces.",
+    "collections": ["Women", "Men", "Unisex & Accessories", "New arrivals", "Shirts", "Denim", "Knitwear", "T-shirts", "Trousers", "Outerwear", "Dresses", "Skirts", "Accessories"],
+    "shopping_features": ["Browse and search the product catalogue", "Filter by collection and category", "View product details, colors, and listed sizes", "Save products to a wishlist", "Add products to a shopping bag", "Create an account and view orders", "Request cancellation before shipment and eligible returns from Orders & returns", "Ask the website shopping assistant or contact support through the configured WhatsApp integration"],
+    "cancellations": "A customer can request cancellation while an order is Order placed, Confirmed, or Processing. Cancellation is not available after shipment has started. Signed-in customers can open Orders & returns to submit an eligible request.",
+    "checkout": "Website checkout currently offers cash on delivery. The customer selects a delivery date within the 4–7 day estimate and one of the available three-hour delivery windows.",
+    "shipping": "Delivery is ₹99 for orders below ₹2,500 and free for orders of ₹2,500 or more. Checkout estimates delivery 4–7 days ahead and allows the shopper to choose an available date and delivery window.",
+    "payment": "Cash on delivery is the payment method currently offered by website checkout. Customers pay in cash when the order arrives.",
+    "product_catalogue": "The live product catalogue is loaded from the store catalogue. Only products returned in the current retrieved context are verified for a specific customer question. Listed sizes are available-size options; do not infer fit advice or live inventory beyond the catalogue data.",
+    "order_help": "Signed-in customers can view their orders in Orders & returns. Order status and delivery updates are based on the order record; if an order cannot be located, ask for its order ID and direct the customer to Orders & returns or human support.",
+    "voice": "The website assistant accepts typed messages and voice notes; voice notes are transcribed before being handled as support questions when voice transcription is configured.",
+}
 
 BASE = {
     "orders": [],
     "products": PRODUCTS,
-    "policy": "Returns are accepted within 14 days of delivery for unused items in original packaging. Eligible return requests below ₹2,000 are automatically approved by the low-value policy rule; requests of ₹2,000 or more require administrator approval. Approval does not mean a refund is paid: returns must first be received and inspected. Refunds are sent to the original payment method within 5–7 business days after inspection. COD orders are refunded by bank transfer after the customer provides account details through the secure support form. Items marked final sale, personalized items, and products damaged through misuse are not eligible. Never promise a refund until eligibility is verified.",
+    "policy": "Returns may be requested within 14 days after delivery for unused items in their original packaging. Eligible return requests below ₹2,000 are automatically approved by the low-value policy rule; requests of ₹2,000 or more require administrator approval. Approval does not mean a refund is paid: the item must first be received and inspected. Refunds are sent to the original payment method within 5–7 business days after inspection. The checkout currently offers cash on delivery; do not promise a COD refund method or request bank details in chat. Items marked final sale, personalized items, and products damaged through misuse are not eligible. Never promise a refund until eligibility is verified. Customers can submit eligible requests from Orders & returns.",
     "approvals": [],
     "refunds": [],
     "conversations": [],
@@ -57,6 +69,9 @@ def load_store() -> dict[str, Any]:
         data["approvals"] = []
         data["refunds"] = []
         if "Every return and refund request requires administrator approval" in data.get("policy", ""):
+            data["policy"] = BASE["policy"]
+        old_default_policy = data.get("policy", "")
+        if "secure support form" in old_default_policy.lower() and "COD orders are refunded by bank transfer" in old_default_policy:
             data["policy"] = BASE["policy"]
         existing = {product.get("id"): product for product in data["products"]}
         for product in BASE["products"]:
@@ -414,6 +429,30 @@ def collection_intent(question: str) -> str | None:
     return None
 
 
+def store_info_intent(question: str) -> bool:
+    return bool(re.search(r"\b(what can you do|what do you offer|how does this (?:website|store) work|about (?:your|the) (?:store|website)|store features|website features|what services|what is form ?&? ?field)\b", question, re.I))
+
+
+def shipping_intent(question: str) -> bool:
+    return bool(re.search(r"\b(shipping|ship(?:ped|ping)?|delivery fee|delivery charge|shipping fee|shipping charge|delivery time|how long.{0,20}(?:deliver|delivery|arrive)|delivery.{0,20}(?:fee|charge|cost|take|time|long)|free delivery|free shipping)\b", question, re.I))
+
+
+def payment_intent(question: str) -> bool:
+    return bool(re.search(r"\b(payment methods?|pay(?:ment)? options?|cash on delivery|\bcod\b|credit cards?|debit cards?)\b", question, re.I))
+
+
+def checkout_intent(question: str) -> bool:
+    return bool(re.search(r"\b(how (?:do|can) i (?:place|make) (?:an? )?order|how (?:does|to) checkout work|how to order|place an order|checkout process)\b", question, re.I))
+
+
+def cancellation_intent(question: str) -> bool:
+    return bool(re.search(r"\b(cancel(?:lation)?|stop)\b.{0,30}\b(order|purchase)\b|\b(order|purchase)\b.{0,30}\b(cancel(?:lation)?|stop)\b", question, re.I))
+
+
+def size_intent(question: str) -> bool:
+    return bool(re.search(r"\b(what sizes?|available sizes?|size chart|sizing|fit advice|which size)\b", question, re.I))
+
+
 def is_order_tracking_question(question: str) -> bool:
     return bool(re.search(r"\b(track|tracking|where is|status of|check on|check my|locate|find)\b.{0,50}\b(order|purchase|delivery|package|shipment)\b|\b(order|purchase|delivery|package|shipment)\b.{0,50}\b(status|where|track|tracking|arrive|coming)\b", question, re.I))
 
@@ -497,7 +536,7 @@ def get_context(question: str, verified_phone: str | None = None, history: list[
         policy = " ".join(selected)[:2400]
     # Only send the minimum order fields needed to answer; never expose phone/email/payment data to a model.
     safe_order = ({key: order[key] for key in ("id", "items", "amount", "refund_amount", "status", "placed", "delivery", "requested_delivery_date", "requested_delivery_slot", "estimated_delivery_from", "estimated_delivery_to", "return_until") if key in order} if order else None)
-    return {"order": safe_order, "products": products, "policy": policy, "collection":collection}
+    return {"order": safe_order, "products": products, "policy": policy, "collection":collection, "store_info": STORE_KNOWLEDGE}
 
 
 def deterministic_answer(question: str, context: dict[str, Any]) -> str:
@@ -505,6 +544,11 @@ def deterministic_answer(question: str, context: dict[str, Any]) -> str:
     tamil = tamil_or_tanglish(question)
     if context["order"]:
         o = context["order"]
+        if cancellation_intent(question):
+            eligible = o["status"] in ("Order placed", "Confirmed", "Processing")
+            if tamil:
+                return f"Order {o['id']} நிலை: {o['status']}. {'Shipment தொடங்கும் முன் Orders & returns பகுதியில் cancellation request செய்யலாம்.' if eligible else 'Shipment process தொடங்கியதால் இப்போது cancellation செய்ய முடியாது.'}"
+            return f"**Cancellation for {o['id']}**\n- Current status: {o['status']}\n- {'You can request cancellation before shipment starts. Open Orders & returns while signed in.' if eligible else 'Cancellation is unavailable because shipment has already started.'}"
         if is_returns_topic(question):
             if tamil:
                 return f"**{o['id']} return தகவல்**\n- Order நிலை: {o['status']}\n- Delivered ஆன 14 நாட்களுக்குள் unused item-ஐ original packaging-இல் return செய்யலாம்.\n- ₹2,000-க்கும் குறைவான eligible return policy மூலம் auto-approve ஆகும்; ₹2,000 அல்லது அதற்கு மேல் admin approval தேவை.\n- Refund, item திரும்பப் பெற்று ஆய்வு செய்த பிறகே process செய்யப்படும்.\n\nRequest செய்ய **Orders & returns** திறக்கவும்."
@@ -525,6 +569,26 @@ def deterministic_answer(question: str, context: dict[str, Any]) -> str:
         else:
             delivery=f"The latest order update is: {o['status']}."
         return f"I found order {o['id']}. It contains {o['items']}. {delivery} Is there anything else I can help with?"
+    if cancellation_intent(question):
+        if tamil: return "Shipment தொடங்கும் முன் eligible order-ஐ cancel செய்யலாம். Sign in செய்து **Orders & returns** திறந்து உங்கள் order-ஐத் தேர்வு செய்து cancellation request அனுப்புங்கள். Shipment தொடங்கிய பிறகு cancel செய்ய முடியாது."
+        return "**Order cancellation**\n- You can request cancellation while the order is still before shipment.\n- Sign in, open **Orders & returns**, choose the order, and submit the cancellation request.\n- Cancellation is unavailable once shipment has started."
+    if size_intent(question) and context.get("products"):
+        entries = [f"- **{p['name']}**: listed sizes {', '.join(p.get('sizes', [])) or 'not listed'}" for p in context["products"]]
+        return "**Listed sizes**\n" + "\n".join(entries) + "\n\nThese are the sizes listed for the product; I don’t have a separate fit chart in the store information."
+    if store_info_intent(question):
+        if tamil:
+            return "Form & Field-ல் Women, Men, மற்றும் Unisex & Accessories ஆடைகளைப் பார்க்கலாம்; search/filter, product sizes, wishlist, bag, COD checkout, account order tracking, eligible cancellation/return requests ஆகியவை உள்ளன. Product, delivery, order, return விவரங்களுக்கு என்னிடம் கேளுங்கள்."
+        return "**Welcome to Form & Field**\n- Browse Women, Men, and Unisex & Accessories, plus categories such as shirts, denim, knitwear, dresses, and accessories.\n- Search and filter products, check listed colors and sizes, save favorites, and add pieces to your bag.\n- Checkout uses cash on delivery; signed-in customers can view orders and submit eligible cancellation or return requests in **Orders & returns**.\n- I can help with product details, delivery, orders, and the returns policy. What would you like to know?"
+    if shipping_intent(question):
+        if tamil:
+            return "**Delivery தகவல்**\n- ₹2,500 அல்லது அதற்கு மேல் order செய்தால் delivery இலவசம்; அதற்கு கீழே ₹99.\n- Checkout-ல் பொதுவாக 4–7 நாட்களுக்குள் கிடைக்கும் delivery date மற்றும் மூன்று மணி நேர time window தேர்வு செய்யலாம்."
+        return "**Delivery & shipping**\n- Delivery is free on orders of ₹2,500 or more; orders below that have a ₹99 delivery fee.\n- At checkout, choose an available delivery date within the 4–7 day estimate and a three-hour delivery window."
+    if payment_intent(question):
+        if tamil: return "இப்போது website checkout-ல் Cash on Delivery (COD) கிடைக்கிறது. Order வந்தபோது cash-ஆக செலுத்தலாம்."
+        return "**Payment**\n- Website checkout currently offers Cash on Delivery (COD). Pay in cash when your order arrives."
+    if checkout_intent(question):
+        if tamil: return "Product-ஐ bag-ல் சேர்த்து Checkout செல்லுங்கள். Contact மற்றும் delivery விவரங்கள், delivery date/time தேர்வு செய்து order place செய்யலாம். Payment தற்போது COD. ₹2,500+ order-க்கு delivery free; இல்லையெனில் ₹99."
+        return "**How to place an order**\n1. Choose a product and its available size, then add it to your bag.\n2. Open your bag and continue to checkout.\n3. Enter contact and delivery details, choose an available delivery date and time window, then place the order.\n4. Pay cash when it arrives. Delivery is free at ₹2,500; below that it is ₹99."
     if is_order_tracking_question(question):
         if tamil:
             if db_pool is None: return "இப்போது order database இணைக்கப்படவில்லை; அதனால் order நிலையைச் சரிபார்க்க முடியவில்லை. Neon connection மீண்டும் அமைக்கப்பட்டதும், உங்கள் order ID மற்றும் checkout செய்த phone number-ஐ அனுப்புங்கள்."
@@ -556,7 +620,7 @@ def deterministic_answer(question: str, context: dict[str, Any]) -> str:
 async def generate_answer(question: str, context: dict[str, Any], lang: str, history: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     history = history or []
     prompt = (
-        "You are Techjays ecommerce customer support. Be concise and warm. Reply in the customer's language "
+        "You are Form & Field's ecommerce shopping companion and customer-support assistant. Be concise and warm. Use store_info for verified store features, shipping, payment, and checkout questions, and use retrieved catalogue entries for product details and listed sizes. Reply in the customer's language "
         "(English, Tamil, or Tanglish); preserve order IDs. Answer only from VERIFIED CONTEXT. If it is missing, "
         "say you do not have the information and offer human support. Never invent order state, stock, delivery dates, "
         "or policies. Never claim an action completed without a confirmed tool result. Eligible returns below ₹2,000 "
@@ -693,6 +757,10 @@ async def respond(question: str, phone: str | None, channel: str, lang: str, his
         generated={"answer":action["message"],"provider":"Workflow · deterministic","model":"refund-policy-v1"}
     elif is_returns_topic(question):
         generated={"answer":deterministic_answer(question,context),"provider":"Returns policy · deterministic","model":"returns-policy-v1"}
+    elif store_info_intent(question) or shipping_intent(question) or payment_intent(question) or checkout_intent(question) or cancellation_intent(question):
+        generated={"answer":deterministic_answer(question,context),"provider":"Store guide · verified","model":"store-guide-v1"}
+    elif size_intent(question) and context.get("products"):
+        generated={"answer":deterministic_answer(question,context),"provider":"Catalogue · deterministic","model":"catalogue-sizes-v1"}
     elif context.get("collection"):
         generated={"answer":deterministic_answer(question,context),"provider":"Catalogue · deterministic","model":"collection-search-v1"}
     elif is_order_tracking_question(question):
@@ -703,6 +771,7 @@ async def respond(question: str, phone: str | None, channel: str, lang: str, his
     if context.get("order"): sources.append("Orders database")
     if context.get("products"): sources.append("Product catalogue")
     if is_returns_topic(question): sources.append("Returns policy")
+    if store_info_intent(question) or shipping_intent(question) or payment_intent(question) or checkout_intent(question) or cancellation_intent(question): sources.append("Store information")
     if action:
         generated["answer"] = action["message"]
         generated["action"] = action["type"]
