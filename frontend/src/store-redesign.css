@@ -682,7 +682,9 @@ body { background: linear-gradient(145deg,#f4b400 0%,#ffc20a 46%,#eda900 100%); 
 }
 
 /* Form & Field's mascot joins the storefront as a small animated shopping companion. */
-.companion-pet { position: fixed; z-index: 8; right: 34px; bottom: 77px; display: grid; width: 72px; height: 72px; place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; filter: drop-shadow(0 8px 12px #38230035); animation: pet-hover 3.4s ease-in-out infinite; }
+.companion-pet { position: fixed; z-index: 8; right: 34px; bottom: 77px; display: grid; width: 72px; height: 72px; place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: grab; touch-action: none; user-select: none; filter: drop-shadow(0 8px 12px #38230035); animation: pet-hover 3.4s ease-in-out infinite; }
+.companion-pet.is-dragging { z-index: 20; cursor: grabbing; animation: none; }
+.companion-pet>img { -webkit-user-drag: none; user-select: none; }
 .companion-pet>img { position: relative; z-index: 1; display: block; width: 66px; height: 66px; border: 3px solid #fff1b9; border-radius: 21px; background: #ffc20a; box-shadow: 0 0 0 2px #17130b; transition: transform .25s cubic-bezier(.2,1.5,.5,1); }
 .companion-pet:before { position: absolute; right: 3px; bottom: 1px; left: 3px; height: 11px; content: ''; border-radius: 50%; background: #17130b35; filter: blur(5px); transform: scale(.8); transition: transform .3s ease, opacity .3s ease; }
 .companion-pet:hover>img, .companion-pet:focus-visible>img { transform: translateY(-7px) rotate(-5deg) scale(1.07); }
