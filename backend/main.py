@@ -49,6 +49,7 @@ STORE_KNOWLEDGE = {
 BASE = {
     "orders": [],
     "products": PRODUCTS,
+    "deleted_product_ids": [],
     "policy": "Returns may be requested within 14 days after delivery for unused items in their original packaging. Eligible return requests below ₹2,000 are automatically approved by the low-value policy rule; requests of ₹2,000 or more require administrator approval. Approval does not mean a refund is paid: the item must first be received and inspected. Refunds are sent to the original payment method within 5–7 business days after inspection. The checkout currently offers cash on delivery; do not promise a COD refund method or request bank details in chat. Items marked final sale, personalized items, and products damaged through misuse are not eligible. Never promise a refund until eligibility is verified. Customers can submit eligible requests from Orders & returns.",
     "approvals": [],
     "refunds": [],
@@ -73,13 +74,18 @@ def load_store() -> dict[str, Any]:
         old_default_policy = data.get("policy", "")
         if "secure support form" in old_default_policy.lower() and "COD orders are refunded by bank transfer" in old_default_policy:
             data["policy"] = BASE["policy"]
+        data.setdefault("deleted_product_ids", [])
+        deleted_product_ids = set(data["deleted_product_ids"])
         existing = {product.get("id"): product for product in data["products"]}
         for product in BASE["products"]:
+            if product["id"] in deleted_product_ids:
+                continue
             current = existing.get(product["id"])
             if current is None:
                 data["products"].append(product.copy())
             else:
-                current.update(product)
+                for key, value in product.items():
+                    current.setdefault(key, value)
         save_store(data)
         return data
     except (OSError, json.JSONDecodeError):
@@ -242,6 +248,7 @@ async def lifespan(_: FastAPI):
                 for statement in schema.split(";"):
                     if statement.strip():
                         await conn.execute(statement)
+            await sync_catalog_products()
             await hydrate_neon_store()
             print("Neon PostgreSQL connected; order schema is ready.")
         except Exception as exc:
@@ -258,6 +265,7 @@ app = FastAPI(title="Techjays Customer Support Assistant", version="1.0.0", life
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"], allow_methods=["*"], allow_headers=["*"], allow_credentials=False)
 budget_lock = asyncio.Lock()
 checkout_lock = asyncio.Lock()
+product_lock = asyncio.Lock()
 
 
 class ChatInput(BaseModel):
@@ -275,6 +283,19 @@ class ApprovalInput(BaseModel):
 
 class PolicyInput(BaseModel):
     policy: str = Field(min_length=1, max_length=50000)
+
+
+class ProductInput(BaseModel):
+    name: str = Field(min_length=2, max_length=120)
+    category: str = Field(min_length=2, max_length=40)
+    audience: str = Field(pattern=r"^(Women|Men|Unisex)$")
+    price: int = Field(ge=0, le=10000000)
+    detail: str = Field(min_length=5, max_length=1000)
+    aliases: list[str] = Field(default_factory=list, max_length=30)
+    image: str = Field(min_length=1, max_length=2000)
+    color: str = Field(min_length=1, max_length=80)
+    sizes: list[str] = Field(min_length=1, max_length=20)
+    badge: str = Field(default="", max_length=30)
 
 
 class SendInput(BaseModel):
@@ -1186,6 +1207,128 @@ async def hydrate_neon_store() -> None:
         store["refunds"].append(record)
         if status == "Pending executive approval":
             store["approvals"].append({**record,"status":"Pending review"})
+
+
+def clean_product_input(body: ProductInput) -> dict[str, Any]:
+    image = body.image.strip()
+    parsed = urlparse(image)
+    if not ((image.startswith("/") and not image.startswith("//")) or (parsed.scheme in {"http", "https"} and parsed.netloc)):
+        raise HTTPException(422, "Use a site path or a direct HTTP(S) image URL.")
+    sizes = list(dict.fromkeys(size.strip() for size in body.sizes if size.strip()))
+    if not sizes:
+        raise HTTPException(422, "Add at least one available size.")
+    collection = {"Women": "Womenswear", "Men": "Menswear", "Unisex": "Unisex & Accessories"}[body.audience]
+    return {
+        "name": body.name.strip(),
+        "category": body.category.strip(),
+        "audience": body.audience,
+        "collection": collection,
+        "price": body.price,
+        "detail": body.detail.strip(),
+        "aliases": list(dict.fromkeys(alias.strip() for alias in body.aliases if alias.strip())),
+        "image": image,
+        "color": body.color.strip(),
+        "sizes": sizes,
+        "badge": body.badge.strip(),
+    }
+
+
+async def sync_catalog_products() -> None:
+    if db_pool is None:
+        return
+    async with db_pool.connection() as conn:
+        existing_rows = await (await conn.execute("SELECT id FROM catalog_products")).fetchall()
+        deleted_rows = await (await conn.execute("SELECT id FROM catalog_deleted_products")).fetchall()
+        existing_ids = {row[0] for row in existing_rows}
+        deleted_ids = {row[0] for row in deleted_rows}
+        known_ids = set()
+        # Store-file products include current bundled defaults and any local additions.
+        for product in [*store.get("products", []), *BASE["products"]]:
+            product_id = product.get("id")
+            if not product_id or product_id in known_ids or product_id in existing_ids or product_id in deleted_ids:
+                continue
+            known_ids.add(product_id)
+            await conn.execute(
+                "INSERT INTO catalog_products (id,product_data) VALUES (%s,%s::jsonb) ON CONFLICT (id) DO NOTHING",
+                (product_id, json_text(product)),
+            )
+        rows = await (await conn.execute("SELECT product_data FROM catalog_products ORDER BY sort_order,id")).fetchall()
+    store["products"] = [dict(parse_json(row[0]) or {}) for row in rows]
+    store["deleted_product_ids"] = sorted(deleted_ids)
+    save_store(store)
+
+
+async def save_catalog_product(product: dict[str, Any]) -> None:
+    if DATABASE_URL and db_pool is None:
+        raise HTTPException(503, "The product database is temporarily unavailable. Try again shortly.")
+    if db_pool:
+        async with db_pool.connection() as conn:
+            async with conn.transaction():
+                await conn.execute("DELETE FROM catalog_deleted_products WHERE id=%s", (product["id"],))
+                await conn.execute(
+                    "INSERT INTO catalog_products (id,product_data) VALUES (%s,%s::jsonb) "
+                    "ON CONFLICT (id) DO UPDATE SET product_data=EXCLUDED.product_data,updated_at=now()",
+                    (product["id"], json_text(product)),
+                )
+
+
+@app.get("/api/admin/products")
+async def admin_products(request: Request) -> dict[str, Any]:
+    require_admin(request)
+    return {"products": store["products"]}
+
+
+@app.post("/api/admin/products")
+async def create_catalog_product(body: ProductInput, request: Request) -> dict[str, Any]:
+    require_admin(request)
+    fields = clean_product_input(body)
+    async with product_lock:
+        base_id = re.sub(r"[^a-z0-9]+", "-", fields["name"].casefold()).strip("-")[:72] or "store-item"
+        existing_ids = {product.get("id") for product in store["products"]} | set(store.get("deleted_product_ids", []))
+        product_id = base_id
+        while product_id in existing_ids:
+            product_id = f"{base_id}-{uuid.uuid4().hex[:6]}"
+        product = {"id": product_id, **fields}
+        await save_catalog_product(product)
+        store["products"].append(product)
+        store.get("deleted_product_ids", []).remove(product_id) if product_id in store.get("deleted_product_ids", []) else None
+        save_store(store)
+    return {"product": product}
+
+
+@app.put("/api/admin/products/{product_id}")
+async def update_catalog_product(product_id: str, body: ProductInput, request: Request) -> dict[str, Any]:
+    require_admin(request)
+    fields = clean_product_input(body)
+    async with product_lock:
+        index = next((i for i, product in enumerate(store["products"]) if product.get("id") == product_id), None)
+        if index is None:
+            raise HTTPException(404, "Product not found.")
+        product = {"id": product_id, **fields}
+        await save_catalog_product(product)
+        store["products"][index] = product
+        save_store(store)
+    return {"product": product}
+
+
+@app.delete("/api/admin/products/{product_id}")
+async def delete_catalog_product(product_id: str, request: Request) -> dict[str, Any]:
+    require_admin(request)
+    async with product_lock:
+        index = next((i for i, product in enumerate(store["products"]) if product.get("id") == product_id), None)
+        if index is None:
+            raise HTTPException(404, "Product not found.")
+        if DATABASE_URL and db_pool is None:
+            raise HTTPException(503, "The product database is temporarily unavailable. Try again shortly.")
+        if db_pool:
+            async with db_pool.connection() as conn:
+                async with conn.transaction():
+                    await conn.execute("DELETE FROM catalog_products WHERE id=%s", (product_id,))
+                    await conn.execute("INSERT INTO catalog_deleted_products (id) VALUES (%s) ON CONFLICT (id) DO UPDATE SET deleted_at=now()", (product_id,))
+        store["products"].pop(index)
+        store.setdefault("deleted_product_ids", []).append(product_id)
+        save_store(store)
+    return {"ok": True, "id": product_id}
 
 
 @app.get("/api/catalog")

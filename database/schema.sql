@@ -1,6 +1,18 @@
 -- Form & Field order tracking schema for Neon (PostgreSQL).
 -- Run in the Neon SQL Editor. Uses INR paise to avoid floating point money.
 
+CREATE TABLE IF NOT EXISTS catalog_products (
+    id TEXT PRIMARY KEY,
+    product_data JSONB NOT NULL,
+    sort_order BIGINT GENERATED ALWAYS AS IDENTITY,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS catalog_deleted_products (
+    id TEXT PRIMARY KEY,
+    deleted_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS customers (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     full_name TEXT NOT NULL,
