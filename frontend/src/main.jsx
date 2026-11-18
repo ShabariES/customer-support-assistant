@@ -19,7 +19,7 @@ const normalizeProduct = product => ({
 const fallbackProducts = catalogProducts.map(normalizeProduct);
 const money = n => `₹${Number(n).toLocaleString('en-IN')}`;
 const heroSlides = [
-  {image:'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=2000&q=82', kicker:'THE AUTUMN EDIT · 2026', title:'Wear what', accent:'feels like you.', description:'Thoughtful clothes for the everyday moments that turn into your favorite ones.', caption:'Made for the in-between'},
+  {image:'https://images.unsplash.com/photo-1644389983031-033b450acb58?auto=format&fit=crop&w=2000&q=82', kicker:'THE AUTUMN EDIT · 2026', title:'Wear what', accent:'feels like you.', description:'Thoughtful clothes for the everyday moments that turn into your favorite ones.', caption:'Made for the in-between'},
   {image:'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=2000&q=82', kicker:'A NEW WAY TO WEAR IT', title:'Find your', accent:'own rhythm.', description:'Easy layers and considered details, ready for wherever the day takes you.', caption:'The everyday, reimagined'},
   {image:'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=2000&q=82', kicker:'MADE TO LIVE IN', title:'Good pieces,', accent:'longer stories.', description:'Meet the shapes, colors and textures you will reach for again and again.', caption:'Wear it your way'},
 ];
