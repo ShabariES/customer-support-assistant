@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title">
+  <title id="title">Form and Field assistant mascot</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a9102d"/><stop offset="1" stop-color="#590b1c"/></linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#ffc2a5"/><stop offset="1" stop-color="#df8d76"/></linearGradient>
+    <linearGradient id="cap" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fffdf8"/><stop offset="1" stop-color="#ded8d5"/></linearGradient>
+  </defs>
+  <rect width="120" height="120" rx="28" fill="url(#bg)"/>
+  <circle cx="60" cy="60" r="49" fill="none" stroke="#ffd7dc" stroke-opacity=".22" stroke-width="1.5"/>
+  <path d="M24 120c3-19 16-29 36-29s33 10 36 29" fill="#21191d"/>
+  <path d="M39 82h42v19c-11 9-31 9-42 0z" fill="url(#skin)"/>
+  <path d="M34 47c0-15 11-25 26-25s26 10 26 25v27c0 17-12 28-26 28S34 91 34 74z" fill="url(#skin)"/>
+  <path d="M34 51c-9-3-11 9-3 15m55-15c9-3 11 9 3 15" fill="url(#skin)" stroke="#cb7867" stroke-width="2"/>
+  <path d="M31 42c0-18 12-30 29-30s29 12 29 30v5H31z" fill="url(#cap)"/>
+  <path d="M27 43c0-4 3-7 7-7h52c4 0 7 3 7 7s-3 7-7 7H34c-4 0-7-3-7-7z" fill="#f5f0eb"/>
+  <path d="M34 24c12 4 40 4 52 0" fill="none" stroke="#d7d0cc" stroke-width="2" stroke-linecap="round"/>
+  <g fill="#171316" stroke="#393136" stroke-width="2">
+    <rect x="32" y="50" width="25" height="16" rx="6"/>
+    <rect x="63" y="50" width="25" height="16" rx="6"/>
+    <path d="M57 56c2-3 4-3 6 0" fill="none" stroke="#171316" stroke-width="3"/>
+  </g>
+  <path d="M38 53h12" stroke="#ffffff" stroke-opacity=".35" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M42 76c5 7 31 7 36 0" fill="#651224" stroke="#a54b58" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M45 76c5 4 25 4 30 0l-3 7c-5 4-19 4-24 0z" fill="#fff8f3"/>
+  <path d="M54 77v6m12-6v6" stroke="#e4d6d1" stroke-width="1"/>
+  <circle cx="26" cy="83" r="2.5" fill="#f2c878"/><circle cx="94" cy="83" r="2.5" fill="#f2c878"/>
+</svg>
