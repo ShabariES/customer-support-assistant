@@ -680,3 +680,30 @@ body { background: linear-gradient(145deg,#f4b400 0%,#ffc20a 46%,#eda900 100%); 
 @media (prefers-reduced-motion: reduce) {
   .bag-trigger i, .bag-trigger:hover svg, .product-card:hover .product-image:after, .quick-add:hover>span:first-child svg { animation: none !important; transition: none !important; }
 }
+
+/* Form & Field's mascot joins the storefront as a small animated shopping companion. */
+.companion-pet { position: fixed; z-index: 8; right: 34px; bottom: 77px; display: grid; width: 72px; height: 72px; place-items: center; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; filter: drop-shadow(0 8px 12px #38230035); animation: pet-hover 3.4s ease-in-out infinite; }
+.companion-pet>img { position: relative; z-index: 1; display: block; width: 66px; height: 66px; border: 3px solid #fff1b9; border-radius: 21px; background: #ffc20a; box-shadow: 0 0 0 2px #17130b; transition: transform .25s cubic-bezier(.2,1.5,.5,1); }
+.companion-pet:before { position: absolute; right: 3px; bottom: 1px; left: 3px; height: 11px; content: ''; border-radius: 50%; background: #17130b35; filter: blur(5px); transform: scale(.8); transition: transform .3s ease, opacity .3s ease; }
+.companion-pet:hover>img, .companion-pet:focus-visible>img { transform: translateY(-7px) rotate(-5deg) scale(1.07); }
+.companion-pet:hover:before, .companion-pet:focus-visible:before { opacity: .55; transform: scale(.62); }
+.pet-spark { position: absolute; z-index: 2; display: grid; place-items: center; color: #17130b; animation: pet-twinkle 2.2s ease-in-out infinite; }
+.pet-spark-one { top: 0; right: 0; }
+.pet-spark-two { top: 24px; left: -4px; animation-delay: .8s; }
+.pet-speech { position: absolute; right: 61px; bottom: 42px; width: max-content; padding: 9px 12px; border: 1px solid #17130b24; border-radius: 5px 14px 5px 14px; color: #17130b; background: #fff9e7; box-shadow: 0 7px 18px #38230018; font-size: 10px; font-weight: 800; letter-spacing: .02em; opacity: 0; transform: translate(8px,5px) scale(.92); pointer-events: none; animation: pet-greeting 6.5s 1.2s both; }
+.pet-speech:after { position: absolute; right: -5px; bottom: 7px; width: 9px; height: 9px; content: ''; border-top: 1px solid #17130b24; border-right: 1px solid #17130b24; background: #fff9e7; transform: rotate(45deg); }
+.companion-pet:hover .pet-speech, .companion-pet:focus-visible .pet-speech { animation: pet-speech-show .2s ease both; }
+@keyframes pet-hover { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-7px) rotate(2deg); } }
+@keyframes pet-twinkle { 0%,100% { opacity: .35; transform: scale(.75) rotate(-12deg); } 50% { opacity: 1; transform: scale(1.15) rotate(12deg); } }
+@keyframes pet-greeting { 0%,8% { opacity: 0; transform: translate(8px,5px) scale(.92); } 14%,78% { opacity: 1; transform: translate(0,0) scale(1); } 92%,100% { opacity: 0; transform: translate(5px,3px) scale(.96); } }
+@keyframes pet-speech-show { to { opacity: 1; transform: translate(0,0) scale(1); } }
+@media (max-width: 700px) {
+  .companion-pet { right: 22px; bottom: 70px; width: 59px; height: 59px; }
+  .companion-pet>img { width: 54px; height: 54px; border-radius: 17px; }
+  .pet-speech { right: 49px; bottom: 35px; padding: 7px 9px; font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .companion-pet, .pet-spark, .pet-speech { animation: none !important; }
+  .pet-speech { opacity: 0; }
+  .companion-pet:hover .pet-speech, .companion-pet:focus-visible .pet-speech { opacity: 1; transform: none; }
+}
