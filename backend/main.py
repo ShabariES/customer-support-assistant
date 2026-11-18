@@ -104,6 +104,7 @@ def save_store(data: dict[str, Any]) -> None:
 store = load_store()
 openwa_inflight: set[str] = set()
 db_pool = None
+catalog_db_ready = False
 
 
 def json_text(value: Any) -> str:
@@ -238,18 +239,32 @@ class NeonPool:
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    global db_pool
+    global db_pool, catalog_db_ready
     if DATABASE_URL:
         try:
             db_pool = NeonPool(DATABASE_URL, size=1)
             await db_pool.open()
             schema = (ROOT / "database" / "schema.sql").read_text(encoding="utf-8")
-            async with db_pool.connection() as conn:
-                for statement in schema.split(";"):
-                    if statement.strip():
-                        await conn.execute(statement)
-            await sync_catalog_products()
-            await hydrate_neon_store()
+            for statement in schema.split(";"):
+                if statement.strip():
+                    try:
+                        async with db_pool.connection() as conn:
+                            await conn.execute(statement)
+                    except Exception as exc:
+                        if "catalog_products" in statement.lower() or "catalog_deleted_products" in statement.lower():
+                            print(f"Optional catalogue schema migration failed: {type(exc).__name__}: {exc}")
+                            continue
+                        raise
+            try:
+                await sync_catalog_products()
+            except Exception as exc:
+                print(f"Catalogue sync failed; keeping the order database online: {type(exc).__name__}: {exc}")
+            else:
+                catalog_db_ready = True
+            try:
+                await hydrate_neon_store()
+            except Exception as exc:
+                print(f"Neon store hydration failed; keeping database connection available: {type(exc).__name__}: {exc}")
             print("Neon PostgreSQL connected; order schema is ready.")
         except Exception as exc:
             db_pool = None
@@ -296,6 +311,12 @@ class ProductInput(BaseModel):
     color: str = Field(min_length=1, max_length=80)
     sizes: list[str] = Field(min_length=1, max_length=20)
     badge: str = Field(default="", max_length=30)
+
+
+class CustomerAdminInput(BaseModel):
+    name: str = Field(min_length=2, max_length=100)
+    email: str = Field(min_length=5, max_length=254)
+    phone: str = Field(min_length=10, max_length=20)
 
 
 class SendInput(BaseModel):
@@ -1237,10 +1258,11 @@ async def sync_catalog_products() -> None:
     if db_pool is None:
         return
     async with db_pool.connection() as conn:
-        existing_rows = await (await conn.execute("SELECT id FROM catalog_products")).fetchall()
+        existing_rows = await (await conn.execute("SELECT id,sort_order FROM catalog_products")).fetchall()
         deleted_rows = await (await conn.execute("SELECT id FROM catalog_deleted_products")).fetchall()
         existing_ids = {row[0] for row in existing_rows}
         deleted_ids = {row[0] for row in deleted_rows}
+        next_order = max((row[1] or 0 for row in existing_rows), default=0) + 1
         known_ids = set()
         # Store-file products include current bundled defaults and any local additions.
         for product in [*store.get("products", []), *BASE["products"]]:
@@ -1249,9 +1271,10 @@ async def sync_catalog_products() -> None:
                 continue
             known_ids.add(product_id)
             await conn.execute(
-                "INSERT INTO catalog_products (id,product_data) VALUES (%s,%s::jsonb) ON CONFLICT (id) DO NOTHING",
-                (product_id, json_text(product)),
+                "INSERT INTO catalog_products (id,product_data,sort_order) VALUES (%s,%s::jsonb,%s) ON CONFLICT (id) DO NOTHING",
+                (product_id, json_text(product), next_order),
             )
+            next_order += 1
         rows = await (await conn.execute("SELECT product_data FROM catalog_products ORDER BY sort_order,id")).fetchall()
     store["products"] = [dict(parse_json(row[0]) or {}) for row in rows]
     store["deleted_product_ids"] = sorted(deleted_ids)
@@ -1259,14 +1282,14 @@ async def sync_catalog_products() -> None:
 
 
 async def save_catalog_product(product: dict[str, Any]) -> None:
-    if DATABASE_URL and db_pool is None:
+    if DATABASE_URL and (db_pool is None or not catalog_db_ready):
         raise HTTPException(503, "The product database is temporarily unavailable. Try again shortly.")
     if db_pool:
         async with db_pool.connection() as conn:
             async with conn.transaction():
                 await conn.execute("DELETE FROM catalog_deleted_products WHERE id=%s", (product["id"],))
                 await conn.execute(
-                    "INSERT INTO catalog_products (id,product_data) VALUES (%s,%s::jsonb) "
+                    "INSERT INTO catalog_products (id,product_data,sort_order) VALUES (%s,%s::jsonb,COALESCE((SELECT MAX(sort_order)+1 FROM catalog_products),1)) "
                     "ON CONFLICT (id) DO UPDATE SET product_data=EXCLUDED.product_data,updated_at=now()",
                     (product["id"], json_text(product)),
                 )
@@ -1318,7 +1341,7 @@ async def delete_catalog_product(product_id: str, request: Request) -> dict[str,
         index = next((i for i, product in enumerate(store["products"]) if product.get("id") == product_id), None)
         if index is None:
             raise HTTPException(404, "Product not found.")
-        if DATABASE_URL and db_pool is None:
+        if DATABASE_URL and (db_pool is None or not catalog_db_ready):
             raise HTTPException(503, "The product database is temporarily unavailable. Try again shortly.")
         if db_pool:
             async with db_pool.connection() as conn:
@@ -1517,12 +1540,100 @@ async def update_order_status(order_id: str, body: OrderStatusInput, request: Re
     return {"order_id":order["id"],"status":body.status,"estimated_delivery_from":order.get("estimated_delivery_from"),"estimated_delivery_to":order.get("estimated_delivery_to"),"return_until":order.get("return_until")}
 
 
+@app.get("/api/admin/users")
+async def admin_customer_users(request: Request) -> dict[str, Any]:
+    require_admin(request)
+    require_neon()
+    async with db_pool.connection() as conn:
+        rows = await (await conn.execute(
+            "SELECT id,full_name,email,COALESCE(phone_e164,''),created_at FROM user_accounts "
+            "WHERE role='customer' ORDER BY created_at DESC LIMIT 1000"
+        )).fetchall()
+    return {"users":[{"id":row[0],"name":row[1],"email":row[2],"phone":row[3],"created_at":row[4].isoformat()} for row in rows]}
+
+
+@app.put("/api/admin/users/{user_id}")
+async def update_customer_user(user_id: int, body: CustomerAdminInput, request: Request) -> dict[str, Any]:
+    require_admin(request)
+    require_neon()
+    email = body.email.strip().lower()
+    if not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", email):
+        raise HTTPException(422, "Enter a valid email address.")
+    phone = normalize_order_phone(body.phone)
+    if not 11 <= len(phone) <= 15:
+        raise HTTPException(422, "Enter a valid phone number including its country code if needed.")
+    name = body.name.strip()
+    try:
+        async with db_pool.connection() as conn:
+            async with conn.transaction():
+                account = await (await conn.execute(
+                    "SELECT full_name,email,phone_e164 FROM user_accounts WHERE id=%s AND role='customer' FOR UPDATE", (user_id,)
+                )).fetchone()
+                if not account:
+                    raise HTTPException(404, "Customer account not found.")
+                duplicate_email = await (await conn.execute(
+                    "SELECT id FROM user_accounts WHERE lower(email)=lower(%s) AND id<>%s LIMIT 1", (email,user_id)
+                )).fetchone()
+                if duplicate_email:
+                    raise HTTPException(409, "Another account already uses that email address.")
+                customer = await (await conn.execute(
+                    "SELECT id FROM customers WHERE phone_e164=%s AND lower(email)=lower(%s) FOR UPDATE", (account[2],account[1])
+                )).fetchone()
+                if customer:
+                    duplicate_phone = await (await conn.execute(
+                        "SELECT id FROM customers WHERE phone_e164=%s AND id<>%s LIMIT 1", (phone,customer[0])
+                    )).fetchone()
+                    if duplicate_phone:
+                        raise HTTPException(409, "Another customer record already uses that phone number.")
+                    await conn.execute(
+                        "UPDATE customers SET full_name=%s,email=%s,phone_e164=%s,updated_at=now() WHERE id=%s",
+                        (name,email,phone,customer[0]),
+                    )
+                    order_rows = await (await conn.execute("SELECT id,metadata FROM orders WHERE customer_id=%s FOR UPDATE", (customer[0],))).fetchall()
+                    for order_id, raw_metadata in order_rows:
+                        metadata = parse_json(raw_metadata) or {}
+                        metadata.setdefault("order_snapshot", {}).update({"customer":name,"email":email,"phone":phone})
+                        await conn.execute("UPDATE orders SET metadata=%s::jsonb WHERE id=%s", (json_text(metadata),order_id))
+                await conn.execute(
+                    "UPDATE user_accounts SET full_name=%s,email=%s,phone_e164=%s,updated_at=now() WHERE id=%s AND role='customer'",
+                    (name,email,phone,user_id),
+                )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        if "unique" in str(exc).lower() or getattr(exc,"sqlstate",None)=="23505":
+            raise HTTPException(409, "That email or phone number is already used by another customer.") from exc
+        raise
+    return {"user":{"id":user_id,"name":name,"email":email,"phone":phone}}
+
+
+@app.delete("/api/admin/users/{user_id}")
+async def delete_customer_user(user_id: int, request: Request) -> dict[str, Any]:
+    require_admin(request)
+    require_neon()
+    async with db_pool.connection() as conn:
+        async with conn.transaction():
+            row = await (await conn.execute(
+                "DELETE FROM user_accounts WHERE id=%s AND role='customer' RETURNING id", (user_id,)
+            )).fetchone()
+            if not row:
+                raise HTTPException(404, "Customer account not found.")
+    return {"ok":True,"id":user_id,"message":"Customer sign-in account deleted; historical orders were retained."}
+
+
 @app.get("/api/dashboard")
 async def dashboard(request: Request) -> dict[str, Any]:
     require_admin(request)
-    orders = await load_neon_orders()
-    await hydrate_neon_store()
-    return {"orders":orders,"approvals":store["approvals"],"refunds":store["refunds"],"conversations":store["conversations"][:50],"policy":store["policy"],"products":store["products"],"providers":provider_status(),"budget":budget_info()}
+    orders = []
+    database_connected = False
+    if db_pool:
+        try:
+            orders = await load_neon_orders()
+            await hydrate_neon_store()
+            database_connected = True
+        except Exception as exc:
+            print(f"Admin dashboard could not refresh Neon data: {type(exc).__name__}: {exc}")
+    return {"orders":orders,"approvals":store["approvals"],"refunds":store["refunds"],"conversations":store["conversations"][:50],"policy":store["policy"],"products":store["products"],"providers":provider_status(),"budget":budget_info(),"database":{"configured":bool(DATABASE_URL),"connected":database_connected}}
 
 
 @app.post("/api/chat")

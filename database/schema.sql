@@ -4,9 +4,13 @@
 CREATE TABLE IF NOT EXISTS catalog_products (
     id TEXT PRIMARY KEY,
     product_data JSONB NOT NULL,
-    sort_order BIGINT GENERATED ALWAYS AS IDENTITY,
+    sort_order BIGINT NOT NULL DEFAULT 0,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+ALTER TABLE catalog_products ADD COLUMN IF NOT EXISTS sort_order BIGINT NOT NULL DEFAULT 0;
+ALTER TABLE catalog_products ALTER COLUMN sort_order DROP IDENTITY IF EXISTS;
+ALTER TABLE catalog_products ALTER COLUMN sort_order SET DEFAULT 0;
 
 CREATE TABLE IF NOT EXISTS catalog_deleted_products (
     id TEXT PRIMARY KEY,
