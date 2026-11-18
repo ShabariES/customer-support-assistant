@@ -758,6 +758,66 @@ body { background: linear-gradient(145deg,#f4b400 0%,#ffc20a 46%,#eda900 100%); 
 .customer-refresh:disabled { opacity: .55; cursor: wait; }
 .customer-admin-table { min-width: 760px; }
 .customer-db-note { margin-top: -5px; }
+.shopping-journey { position: relative; display: grid; grid-template-columns: minmax(0, .85fr) minmax(360px, .95fr); align-items: center; gap: clamp(38px, 8vw, 120px); max-width: 1440px; margin: 0 auto; padding: clamp(50px, 7vw, 92px) max(7%, calc((100vw - 1160px) / 2)); overflow: hidden; background: radial-gradient(ellipse at 17% 12%, #ffdf73 0, transparent 38%), linear-gradient(125deg,#ffd54a 0%,#ffc20a 48%,#efac00 100%); }
+.shopping-journey:before { position: absolute; top: -120px; right: -80px; width: 390px; height: 390px; border: 1px solid #17130b12; border-radius: 50%; content: ''; box-shadow: 0 0 0 30px #17130b06,0 0 0 60px #17130b04; }
+.journey-copy { position: relative; z-index: 1; max-width: 420px; }
+.journey-copy .section-eyebrow { color: #5d4300; }
+.journey-copy h2 { margin: 14px 0 15px; color: #17130b; font: 600 clamp(34px,4.2vw,56px)/.98 Manrope,sans-serif; letter-spacing: -.065em; }
+.journey-copy h2 em { color: #7a5600; font-family: Georgia,serif; font-weight: 400; }
+.journey-copy>p { max-width: 330px; margin: 0; color: #493800; font-size: 14px; line-height: 1.8; }
+.journey-copy>button { display: inline-flex; align-items: center; gap: 28px; min-height: 47px; margin-top: 25px; padding: 0 18px; border: 1px solid #17130b; border-radius: 7px; color: #fff9e7; background: #17130b; box-shadow: 0 8px 18px #4a34002b; font-size: 12px; font-weight: 700; transition: transform .2s ease,box-shadow .2s ease,background .2s ease; }
+.journey-copy>button:hover { transform: translateY(-3px); background: #342a16; box-shadow: 0 12px 24px #4a34003d; }
+.journey-note { display: flex; align-items: center; gap: 8px; margin-top: 23px; color: #604900; font-size: 10px; }
+.journey-panel { position: relative; display: flex; flex-direction: column; align-items: stretch; padding: 28px clamp(18px,3vw,36px); border: 1px solid #fff7d4; border-radius: 25px; background: linear-gradient(145deg,#332b1d,#17130b 72%); box-shadow: 0 30px 65px #49330035, inset 0 1px #fff3; }
+.journey-panel-glow { position: absolute; top: 22%; right: -10%; width: 45%; height: 50%; border-radius: 50%; background: #ffca251d; filter: blur(36px); pointer-events: none; }
+.journey-step { position: relative; z-index: 1; display: flex; align-items: center; gap: 14px; min-height: 68px; padding: 10px 16px; border: 1px solid #fff2; border-radius: 16px; color: #fff4ce; background: linear-gradient(110deg,#433a29,#292318); box-shadow: 0 9px 15px #0004,inset 0 1px #fff2; animation: journey-enter .6s both; }
+.journey-step:nth-of-type(2) { animation-delay: .08s; }
+.journey-step:nth-of-type(3) { animation-delay: .16s; }
+.journey-step:nth-of-type(4) { animation-delay: .24s; }
+.journey-step:nth-of-type(5) { animation-delay: .32s; }
+.journey-step-number { display: grid; width: 33px; height: 33px; flex: 0 0 33px; place-items: center; border: 1px solid #ffdb6c6b; border-radius: 11px; color: #ffdb6c; background: #ffc20a14; font: 700 10px Manrope,sans-serif; }
+.journey-step-copy { display: flex; flex: 1; flex-direction: column; gap: 4px; }
+.journey-step-copy b { color: #fff9e7; font-size: 13px; }
+.journey-step-copy small { color: #c7b98f; font-size: 10px; }
+.journey-step>svg { color: #ffce3b; }
+.journey-step-focus { border-color: #ffd34b; color: #17130b; background: linear-gradient(110deg,#ffda60,#f6b900); box-shadow: 0 10px 22px #ffbf0033,inset 0 1px #fff9; transform: translateX(10px); }
+.journey-step-focus .journey-step-number { border-color: #17130b3b; color: #17130b; background: #fff4c4a6; }
+.journey-step-focus .journey-step-copy b { color: #17130b; }
+.journey-step-focus .journey-step-copy small,.journey-step-focus>svg { color: #463400; }
+.journey-step-success { border-color: #ffda55; background: linear-gradient(110deg,#f8be1e,#df9d00); }
+.journey-step-success .journey-step-number { border-color: #17130b35; color: #17130b; background: #fff3c3a0; }
+.journey-step-success .journey-step-copy b,.journey-step-success>svg { color: #17130b; }
+.journey-step-success .journey-step-copy small { color: #493800; }
+.journey-connector { position: relative; z-index: 1; width: 1px; height: 17px; align-self: center; border-left: 1px dashed #ffdc6d99; }
+.journey-connector:after { position: absolute; bottom: 0; left: -4px; width: 7px; height: 7px; content: ''; border-right: 1px solid #ffdc6d; border-bottom: 1px solid #ffdc6d; transform: rotate(45deg); }
+.value-strip { box-shadow: 0 8px 24px #4933000b; }
+.value-strip>div span { background: #fff0b7; color: #17130b; }
+.category-showcase-card { border-radius: 14px; }
+.product-card { border-radius: 12px; }
+.product-image { border-radius: 11px 11px 0 0; }
+.quick-add { border-radius: 8px; }
+.wish-button { border-radius: 12px; }
+.hero .dark-cta,.season-banner-cta { border-radius: 8px; }
+.newsletter form { border-radius: 12px; overflow: hidden; }
+@keyframes journey-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 800px) {
+  .shopping-journey { grid-template-columns: 1fr; gap: 30px; padding: 48px 7%; }
+  .journey-copy { max-width: 600px; }
+  .journey-panel { width: min(100%,560px); justify-self: center; }
+}
+@media (max-width: 520px) {
+  .shopping-journey { gap: 25px; padding: 41px 18px; }
+  .journey-copy h2 { font-size: 38px; }
+  .journey-panel { padding: 18px 14px; border-radius: 20px; }
+  .journey-step { min-height: 62px; gap: 10px; padding: 9px 11px; border-radius: 13px; }
+  .journey-step-focus { transform: translateX(4px); }
+  .journey-step-copy b { font-size: 12px; }
+  .journey-step-copy small { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .journey-step { animation: none; }
+  .journey-copy>button { transition: none; }
+}
 @media (max-width: 700px) {
   .product-admin-title { align-items: stretch; }
   .product-add-button { justify-content: center; }
