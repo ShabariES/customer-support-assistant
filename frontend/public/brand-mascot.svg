@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title">
   <title id="title">Form and Field assistant mascot</title>
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a9102d"/><stop offset="1" stop-color="#590b1c"/></linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd44a"/><stop offset="1" stop-color="#e9aa00"/></linearGradient>
     <linearGradient id="skin" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#ffc2a5"/><stop offset="1" stop-color="#df8d76"/></linearGradient>
     <linearGradient id="cap" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fffdf8"/><stop offset="1" stop-color="#ded8d5"/></linearGradient>
   </defs>
   <rect width="120" height="120" rx="28" fill="url(#bg)"/>
-  <circle cx="60" cy="60" r="49" fill="none" stroke="#ffd7dc" stroke-opacity=".22" stroke-width="1.5"/>
+  <circle cx="60" cy="60" r="49" fill="none" stroke="#17130b" stroke-opacity=".18" stroke-width="1.5"/>
   <path d="M24 120c3-19 16-29 36-29s33 10 36 29" fill="#21191d"/>
   <path d="M39 82h42v19c-11 9-31 9-42 0z" fill="url(#skin)"/>
   <path d="M34 47c0-15 11-25 26-25s26 10 26 25v27c0 17-12 28-26 28S34 91 34 74z" fill="url(#skin)"/>
