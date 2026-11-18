@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-labelledby="title desc">
+  <title id="title">Yellow and navy CSK fan jersey</title>
+  <desc id="desc">A front view of a yellow cricket jersey with navy trim on a warm cream background.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff9e7"/><stop offset="1" stop-color="#f3e9c9"/></linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="1" y2=".2"><stop stop-color="#f4b600"/><stop offset=".5" stop-color="#ffd33d"/><stop offset="1" stop-color="#e7a900"/></linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#805400" stop-opacity=".13"/><stop offset=".18" stop-color="#fff" stop-opacity=".12"/><stop offset=".75" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#805400" stop-opacity=".16"/></linearGradient>
+    <filter id="shadow" x="-.25" y="-.2" width="1.5" height="1.6"><feDropShadow dx="0" dy="24" stdDeviation="22" flood-color="#4a3500" flood-opacity=".2"/></filter>
+    <clipPath id="jersey"><path d="M335 184 409 145q40 39 91 39t91-39l74 39 125 83-63 128-74-40v365H247V355l-74 40-63-128z"/></clipPath>
+  </defs>
+  <rect width="900" height="900" rx="42" fill="url(#bg)"/>
+  <circle cx="719" cy="183" r="140" fill="#fff" opacity=".28"/>
+  <ellipse cx="451" cy="790" rx="250" ry="35" fill="#6b4b00" opacity=".12"/>
+  <g filter="url(#shadow)">
+    <path d="M335 184 409 145q40 39 91 39t91-39l74 39 125 83-63 128-74-40v365H247V355l-74 40-63-128z" fill="url(#shirt)" stroke="#d39c05" stroke-width="5" stroke-linejoin="round"/>
+    <g clip-path="url(#jersey)">
+      <path d="M110 230h682v80H110z" fill="#142b53"/>
+      <path d="M110 249h682v14H110z" fill="#fff0b4" opacity=".85"/>
+      <path d="M110 277h682v9H110z" fill="#edb51e"/>
+      <path d="M246 184h24v540h-24zM630 184h24v540h-24z" fill="#e3a600" opacity=".7"/>
+      <path d="M247 184h470v550H247z" fill="url(#shade)"/>
+      <path d="M389 145q41 52 111 52t111-52l-16 48q-39 31-95 31t-95-31z" fill="#142b53"/>
+      <path d="M425 158q27 22 75 22t75-22l-12 33q-25 17-63 17t-63-17z" fill="#f6d04d"/>
+      <path d="M247 686h468v40H247z" fill="#142b53" opacity=".95"/>
+      <path d="M120 379 173 263l74 47v45l-74 39zM780 379 727 263l-74 47v45l74 39z" fill="#142b53"/>
+      <path d="m137 274 31 15-45 103-31-15zM763 274l-31 15 45 103 31-15z" fill="#fff0b4"/>
+      <path d="m167 289 27 12-45 103-27-12zM733 289l-27 12 45 103 27-12z" fill="#efbd31"/>
+    </g>
+    <path d="M335 184 409 145q40 39 91 39t91-39l74 39 125 83-63 128-74-40v365H247V355l-74 40-63-128z" fill="none" stroke="#d39c05" stroke-width="5" stroke-linejoin="round"/>
+    <text x="450" y="405" text-anchor="middle" fill="#142b53" font-family="Arial,sans-serif" font-size="63" font-weight="900" letter-spacing="4">CSK</text>
+    <path d="M347 426h206" stroke="#142b53" stroke-width="3" opacity=".65"/>
+    <text x="450" y="465" text-anchor="middle" fill="#142b53" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="5" opacity=".78">MATCHDAY EDITION</text>
+    <path d="M450 500v140" stroke="#fff2b3" stroke-width="2" opacity=".55"/>
+    <path d="M391 531h118M391 555h118M391 579h118" stroke="#fff2b3" stroke-width="2" opacity=".5"/>
+  </g>
+  <text x="450" y="850" text-anchor="middle" fill="#715b27" font-family="Arial,sans-serif" font-size="17" font-weight="700" letter-spacing="4">MATCHDAY FAN JERSEY</text>
+</svg>

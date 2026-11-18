@@ -1131,5 +1131,32 @@
       "XL"
     ],
     "badge": ""
+  },
+  {
+    "id": "csk-matchday-fan-jersey",
+    "name": "CSK Matchday Fan Jersey",
+    "category": "T-shirts",
+    "audience": "Unisex",
+    "collection": "Unisex & Accessories",
+    "price": 1490,
+    "detail": "A fan-inspired yellow-and-navy cricket jersey with a sporty crew neck and contrasting sleeve trim. An easy matchday layer for CSK supporters.",
+    "aliases": [
+      "CSK dress",
+      "CSK jersey",
+      "Chennai Super Kings jersey",
+      "Chennai cricket jersey",
+      "yellow cricket jersey",
+      "CSK fan jersey"
+    ],
+    "image": "/csk-fan-jersey.svg",
+    "color": "CSK Yellow & Navy",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "badge": "JUST IN"
   }
 ]
