@@ -256,6 +256,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .hero-wash { z-index: -1; }
 .hero-copy { z-index: 1; animation: hero-copy-in .55s ease both; }
 .hero-copy p { max-width: 390px; line-height: 1.8; }
+.season-banner-mark { right: 8%; bottom: 12px; font-size: clamp(105px, 11vw, 165px); line-height: .9; color: #ffffff12; }
+.season-banner-mark span { color: #ffffff12; }
 .hero .dark-cta, .season-banner-cta { min-height: 48px; padding-inline: 21px; gap: 24px; border-radius: 4px; font-size: 11px; letter-spacing: .01em; box-shadow: 0 8px 22px #500a1926; transition: transform .2s ease, background .2s ease, box-shadow .2s ease; }
 .hero .dark-cta:hover, .season-banner-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 25px #500a1938; }
 .hero-caption { display: flex; align-items: center; gap: 14px; z-index: 2; }
@@ -329,6 +331,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   .hero-control { width: 35px; height: 35px; }
   .hero-caption>span:last-of-type { max-width: 92px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .category-showcase-card { border-radius: 4px; }
+  .season-banner-mark { right: 5%; bottom: 8px; font-size: clamp(76px, 23vw, 115px); }
   .product-card { border-radius: 4px; }
   .product-info { padding: 9px 8px 0; }
   .quick-add { min-height: 34px; padding-inline: 7px; font-size: 8px; }
