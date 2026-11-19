@@ -15,7 +15,7 @@ from contextlib import asynccontextmanager
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import unquote, urlparse
+from urllib.parse import quote, unquote, urlparse
 
 import httpx
 import pymupdf
@@ -889,27 +889,38 @@ async def process_openwa_event(payload: dict[str, Any], idempotency_key: str) ->
     try:
         if payload.get("event") != "message.received":
             return
-        message = payload.get("data") or {}
-        if message.get("fromMe") or message.get("isGroup"):
+        envelope = payload.get("payload") or {}
+        message = payload.get("data") or envelope.get("message") or envelope.get("data") or {}
+        if not isinstance(message, dict):
             mark_processed = True
             return
-        sender = str(message.get("from") or message.get("chatId") or "")
-        raw_phone = sender.split("@", 1)[0]
+        if message.get("fromMe") or message.get("isGroup") or message.get("isGroupMsg"):
+            mark_processed = True
+            return
+        sender = str(message.get("from") or message.get("chatId") or message.get("senderId") or "")
+        raw_phone = str(message.get("senderPhone") or message.get("phone") or "")
+        if sender.lower().endswith("@lid") and not raw_phone:
+            raw_phone = await resolve_openwa_lid_phone(sender)
+        if not raw_phone:
+            raw_phone = sender.split("@", 1)[0] if not sender.lower().endswith("@lid") else ""
         if not re.sub(r"\D", "", raw_phone):
+            print("OpenWA message ignored: sender phone is missing or its WhatsApp privacy ID could not be resolved")
             mark_processed = True
             return
         phone = normalize_order_phone(raw_phone)
+        print(f"OpenWA inbound received from …{phone[-4:]}; checking registered customer and /bot state")
         if not await is_registered_whatsapp_customer(phone):
             print(f"OpenWA message ignored: sender is not a registered customer ({phone[-4:]})")
             mark_processed = True
             return
-        question = str(message.get("body") or "").strip()
+        question = str(message.get("body") or message.get("caption") or message.get("content") or "").strip()
         command = re.sub(r"\s+", " ", question.casefold()).strip()
         active_users = store.setdefault("openwa_active_users", [])
         if command in {"/bot", "/bot on", "/bot start"}:
             if phone not in active_users:
                 active_users.append(phone)
                 save_store(store)
+            print(f"OpenWA assistant activated for registered customer …{phone[-4:]}")
             delivery = await whatsapp_send(sender, "Form & Field assistant is on. Send your shopping or support question anytime. Send /bot off to stop replies.")
             if delivery.get("sent"):
                 mark_processed = True
@@ -926,8 +937,11 @@ async def process_openwa_event(payload: dict[str, Any], idempotency_key: str) ->
                 print(f"OpenWA stop confirmation failed: {delivery.get('reason', 'unknown error')}")
             return
         if phone not in active_users or not question:
+            if phone not in active_users:
+                print(f"OpenWA message ignored: customer …{phone[-4:]} has not sent /bot")
             mark_processed = True
             return
+        print(f"OpenWA is generating a reply for registered customer …{phone[-4:]}")
         result = await respond(question, phone, "whatsapp", "auto")
         delivery = await whatsapp_send(sender, result["answer"])
         if not delivery.get("sent"):
@@ -960,6 +974,37 @@ async def is_registered_whatsapp_customer(phone: str) -> bool:
     except Exception as exc:
         print(f"OpenWA customer lookup failed: {type(exc).__name__}: {exc}")
         return False
+
+
+async def resolve_openwa_lid_phone(sender: str) -> str:
+    api_key = os.getenv("OPENWA_API_KEY", "").strip()
+    session_id = os.getenv("OPENWA_SESSION_ID", "").strip()
+    if not api_key or not session_id:
+        return ""
+    base = os.getenv("OPENWA_BASE_URL", "http://127.0.0.1:2785").rstrip("/")
+    api_base = base if base.endswith("/api") else f"{base}/api"
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            response = await client.get(
+                f"{api_base}/sessions/{quote(session_id, safe='')}/contacts/{quote(sender, safe='@.')}/phone",
+                headers={"X-API-Key":api_key},
+            )
+            if response.is_error:
+                print(f"OpenWA LID phone lookup returned HTTP {response.status_code}")
+                return ""
+            data = response.json()
+            return str(data.get("phone") or data.get("senderPhone") or "")
+    except (httpx.HTTPError, ValueError) as exc:
+        print(f"OpenWA LID phone lookup failed: {type(exc).__name__}: {exc}")
+        return ""
+
+
+def openwa_message_id(payload: dict[str, Any]) -> str | None:
+    envelope = payload.get("payload") or {}
+    message = payload.get("data") or envelope.get("message") or envelope.get("data") or {}
+    message_id = message.get("id") if isinstance(message, dict) else None
+    value = payload.get("idempotencyKey") or message_id
+    return str(value) if value else None
 
 
 @app.get("/api/health")
@@ -1854,7 +1899,7 @@ async def openwa_webhook(request: Request, background_tasks: BackgroundTasks) ->
         raise HTTPException(400, "Invalid OpenWA webhook JSON.") from exc
     if payload.get("event") != "message.received":
         return {"received": True}
-    idempotency_key = request.headers.get("x-openwa-idempotency-key") or payload.get("idempotencyKey")
+    idempotency_key = request.headers.get("x-openwa-idempotency-key") or openwa_message_id(payload)
     if not idempotency_key:
         raise HTTPException(400, "OpenWA idempotency key is required.")
     if idempotency_key in store.get("openwa_processed", []) or idempotency_key in openwa_inflight:
