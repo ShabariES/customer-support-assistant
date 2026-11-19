@@ -69,7 +69,7 @@ Use the exact generated value in both `.env` and OpenWA's webhook secret. Keep b
 - Check OpenWA: `http://127.0.0.1:2785/api/health`
 - Check FastAPI: `http://127.0.0.1:8000/api/health`
 - With a ready session and credentials, the API health response reports `providers.whatsapp: true`.
-- Send a message to the linked number from a different WhatsApp account. OpenWA should deliver it to `/webhooks/openwa`; the customer support assistant replies through OpenWA.
+- Register a website account using the same phone number as your WhatsApp number, then message the linked number with `/bot` to start the assistant. Ask a shopping or support question; send `/bot off` to stop replies. Unregistered numbers and ordinary messages before `/bot` are ignored.
 - Complete a COD order with the customer's opt-in and phone number; the order WhatsApp notification uses the same OpenWA session.
 
-The webhook validates OpenWA's HMAC-SHA256 signature and ignores the linked account's own messages and group messages. The local service currently processes text; unsupported media receives a request to type the question.
+The webhook validates OpenWA's HMAC-SHA256 signature, ignores the linked account's own messages and group messages, checks the sender against registered customer phone numbers in Neon, and only processes messages while that customer has started the assistant with `/bot`. The local service currently processes text messages.

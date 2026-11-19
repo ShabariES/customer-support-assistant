@@ -56,6 +56,7 @@ BASE = {
     "conversations": [],
     "ai_usage": [],
     "openwa_processed": [],
+    "openwa_active_users": [],
 }
 
 
@@ -884,32 +885,81 @@ async def whatsapp_send(phone: str, text: str) -> dict[str, Any]:
 
 
 async def process_openwa_event(payload: dict[str, Any], idempotency_key: str) -> None:
+    mark_processed = False
     try:
         if payload.get("event") != "message.received":
             return
         message = payload.get("data") or {}
         if message.get("fromMe") or message.get("isGroup"):
+            mark_processed = True
             return
         sender = str(message.get("from") or message.get("chatId") or "")
-        phone = sender.split("@", 1)[0]
-        if not re.sub(r"\D", "", phone):
+        raw_phone = sender.split("@", 1)[0]
+        if not re.sub(r"\D", "", raw_phone):
+            mark_processed = True
+            return
+        phone = normalize_order_phone(raw_phone)
+        if not await is_registered_whatsapp_customer(phone):
+            print(f"OpenWA message ignored: sender is not a registered customer ({phone[-4:]})")
+            mark_processed = True
             return
         question = str(message.get("body") or "").strip()
-        if not question:
-            question = "I received your message. I can currently help with text questions here. Please type your question and I’ll help."
+        command = re.sub(r"\s+", " ", question.casefold()).strip()
+        active_users = store.setdefault("openwa_active_users", [])
+        if command in {"/bot", "/bot on", "/bot start"}:
+            if phone not in active_users:
+                active_users.append(phone)
+                save_store(store)
+            delivery = await whatsapp_send(sender, "Form & Field assistant is on. Send your shopping or support question anytime. Send /bot off to stop replies.")
+            if delivery.get("sent"):
+                mark_processed = True
+            else:
+                print(f"OpenWA start confirmation failed: {delivery.get('reason', 'unknown error')}")
+            return
+        if command in {"/bot off", "/bot stop"}:
+            store["openwa_active_users"] = [active for active in active_users if active != phone]
+            save_store(store)
+            delivery = await whatsapp_send(sender, "Form & Field assistant is off. Send /bot to start again.")
+            if delivery.get("sent"):
+                mark_processed = True
+            else:
+                print(f"OpenWA stop confirmation failed: {delivery.get('reason', 'unknown error')}")
+            return
+        if phone not in active_users or not question:
+            mark_processed = True
+            return
         result = await respond(question, phone, "whatsapp", "auto")
         delivery = await whatsapp_send(sender, result["answer"])
         if not delivery.get("sent"):
             print(f"OpenWA reply failed for inbound message: {delivery.get('reason', 'unknown error')}")
             return
-        processed = store.setdefault("openwa_processed", [])
-        processed.append(idempotency_key)
-        store["openwa_processed"] = processed[-2000:]
-        save_store(store)
+        mark_processed = True
     except Exception as exc:
         print(f"OpenWA message processing error: {exc}")
     finally:
+        if mark_processed:
+            processed = store.setdefault("openwa_processed", [])
+            if idempotency_key not in processed:
+                processed.append(idempotency_key)
+                store["openwa_processed"] = processed[-2000:]
+                save_store(store)
         openwa_inflight.discard(idempotency_key)
+
+
+async def is_registered_whatsapp_customer(phone: str) -> bool:
+    if db_pool is None:
+        return False
+    try:
+        async with db_pool.connection() as conn:
+            row = await (await conn.execute(
+                "SELECT 1 FROM user_accounts WHERE role='customer' "
+                "AND regexp_replace(COALESCE(phone_e164,''), '[^0-9]', '', 'g')=%s LIMIT 1",
+                (phone,),
+            )).fetchone()
+        return row is not None
+    except Exception as exc:
+        print(f"OpenWA customer lookup failed: {type(exc).__name__}: {exc}")
+        return False
 
 
 @app.get("/api/health")
